@@ -91,6 +91,392 @@
 </ul>
 </div>
 </div>
+<div class="section" id="readme-sic-similarity-by-iterative-classifications">
+<h1>README - SIC: Similarity by Iterative Classifications<a class="headerlink" href="#readme-sic-similarity-by-iterative-classifications" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#documentation" id="id1">Documentation</a></li>
+<li><a class="reference internal" href="#main-script" id="id2">Main script</a></li>
+<li><a class="reference internal" href="#running-on-igrida" id="id3">Running on Igrida</a></li>
+<li><a class="reference internal" href="#general-structure-of-the-sic-implementation" id="id4">General structure of the SIC implementation</a></li>
+<li><a class="reference internal" href="#options-and-configuration-files" id="id5">Options and Configuration files</a><ul>
+<li><a class="reference internal" href="#general-options" id="id6">General options</a></li>
+<li><a class="reference internal" href="#classifier-options-crf-htk-dt" id="id7">Classifier options (CRF, HTK, DT)</a></li>
+<li><a class="reference internal" href="#evaluation-options" id="id8">Evaluation options</a></li>
+<li><a class="reference internal" href="#dataset-options" id="id9">Dataset options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-scripts" id="id10">Additional scripts</a><ul>
+<li><a class="reference internal" href="#plotting-similarity-distribution" id="id11">Plotting similarity distribution</a></li>
+<li><a class="reference internal" href="#convergence-analysis" id="id12">Convergence analysis</a></li>
+<li><a class="reference internal" href="#confidence-analysis" id="id13">Confidence analysis</a></li>
+<li><a class="reference internal" href="#clustering-evaluation" id="id14">Clustering evaluation</a></li>
+<li><a class="reference internal" href="#map-evaluation" id="id15">mAP evaluation</a></li>
+<li><a class="reference internal" href="#visualization" id="id16">Visualization</a></li>
+<li><a class="reference internal" href="#the-parse-py-script" id="id17">The parse.py script</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requirements" id="id18">Requirements</a><ul>
+<li><a class="reference internal" href="#main-python-dependencies" id="id19">Main Python dependencies</a></li>
+<li><a class="reference internal" href="#external-libraries" id="id20">External libraries</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h2><a class="toc-backref" href="#id1">Documentation</a><a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p><strong>Generation</strong> (Using Sphinx)</p>
+<div class="highlight-python"><div class="highlight"><pre>cd Doc/
+make html
+</pre></div>
+</div>
+<p>The documentation can then be found in <code class="docutils literal"><span class="pre">Doc/_build/html/index.html</span></code></p>
+</div>
+<div class="section" id="main-script">
+<h2><a class="toc-backref" href="#id2">Main script</a><a class="headerlink" href="#main-script" title="Permalink to this headline">¶</a></h2>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>python main.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -p [10] -cs [11] -cc [12] -o [13] -te [14] -in [15] -g [16] -cfg [17] -v [18] --debug --oar --help
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where:</dt>
+<dd><ul class="first simple">
+<li>Default options are found in the <code class="docutils literal"><span class="pre">configuration.ini</span></code> file.</li>
+<li>[1] <code class="docutils literal"><span class="pre">-i,</span> <span class="pre">--iter</span></code>: number of classification iterations.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-t,</span> <span class="pre">--threads</span></code>: number of cores to use.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--dataset</span></code>: dataset to use.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-c,</span> <span class="pre">--classifier</span></code>: classifier to use.</li>
+<li>[5] <code class="docutils literal"><span class="pre">-ts,</span> <span class="pre">--trainsize</span></code>: proportion of dataset to use for training.</li>
+<li>[6] <code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--sim</span></code>: similarity type to use. Defaults to BIN.</li>
+<li>[7] <code class="docutils literal"><span class="pre">-nmin</span></code>: minimum number of synthetic labels.</li>
+<li>[8] <code class="docutils literal"><span class="pre">-nmax</span></code>: maximum number of synthetic labels.</li>
+<li>[9] <code class="docutils literal"><span class="pre">-di,</span> <span class="pre">--distrib</span></code>: synthetic annotation mode (RND, UNI, OVA). Defaults to RND.</li>
+<li>[10] <code class="docutils literal"><span class="pre">-p,</span> <span class="pre">--post</span></code>: post-processing task/algorithm (MCL or KNN, which requires a .qrel version of the ground-truth, see <code class="docutils literal"><span class="pre">parse.py</span></code>).</li>
+<li>[11] <code class="docutils literal"><span class="pre">-cs,</span> <span class="pre">--cvg_step</span></code>: check convergence criterion every <code class="docutils literal"><span class="pre">cs</span></code> step.</li>
+<li>[12] <code class="docutils literal"><span class="pre">-cc,</span> <span class="pre">--cvg_criterion</span></code>: convergence criterion threshold. (Note that the current implementation of the convergence criterion with the concurrency of processes is far from perfect).</li>
+<li>[13] <code class="docutils literal"><span class="pre">-o,</span> <span class="pre">--output</span></code>: output folder.</li>
+<li>[14] <code class="docutils literal"><span class="pre">-te,</span> <span class="pre">--temp</span></code>: temporary folder.</li>
+<li>[15] <code class="docutils literal"><span class="pre">-in</span></code>: input data file.</li>
+<li>[16] <code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--ground</span></code>: ground-truth file.</li>
+<li>[17] <code class="docutils literal"><span class="pre">-cfg,</span> <span class="pre">--cfg_file</span></code>: provide a custom configuration file.</li>
+<li>[18] <code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code>: controls verbosity level (0 to 4).</li>
+<li><code class="docutils literal"><span class="pre">-db,</span> <span class="pre">--debug</span></code>: debug mode (save temporary files).</li>
+<li><code class="docutils literal"><span class="pre">--oar</span></code>: for an Igrida run. Forces the program to use the executables computed for Igrida.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p><strong>Main outputs:</strong></p>
+<ul class="simple">
+<li><em>output.log</em>: log file.</li>
+<li><em>sim_matrix_final.npy</em>: similarity matrix (numpy format. Use numpy.load(matrix_path) to use).</li>
+</ul>
+<p><strong>Verbosity levels:</strong></p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">0</span></code>: minimal verbose level; almost no printed trace.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">1</span></code>: Default.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">2</span></code>: Additional print trace.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">3</span></code>: Prints out the classifier&#8217;s traces.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">4</span></code>: Outputs additional result (distributions plots, number of occurences in test for each entity ...) + save similarity matrix regularly.</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul class="last simple">
+<li>a typical run on <em>NER</em>: <code class="docutils literal"><span class="pre">python</span> <span class="pre">main.py</span> <span class="pre">-d</span> <span class="pre">NER</span> <span class="pre">-N</span> <span class="pre">150</span> <span class="pre">-c</span> <span class="pre">CRF</span> <span class="pre">-nmin</span> <span class="pre">300</span> <span class="pre">-nmax</span> <span class="pre">300</span></code></li>
+<li>a typical run on <em>AUDIOTINY</em> <code class="docutils literal"><span class="pre">python</span> <span class="pre">main.py</span> <span class="pre">-d</span> <span class="pre">AUDIO</span> <span class="pre">-N</span> <span class="pre">300</span> <span class="pre">-c</span> <span class="pre">HTK</span> <span class="pre">-nmin</span> <span class="pre">20</span> <span class="pre">-nmax</span> <span class="pre">40</span></code></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="running-on-igrida">
+<h2><a class="toc-backref" href="#id3">Running on Igrida</a><a class="headerlink" href="#running-on-igrida" title="Permalink to this headline">¶</a></h2>
+<p>To run the experiments on IGRIDA, use the scripts located in the OAR folder. Each script simply sets up the option for Igrida and then call the <code class="docutils literal"><span class="pre">main.py</span></code> script on one full node. Once the computation is done, the corresponding similarity matrix is output in the folder <code class="docutils literal"><span class="pre">/temp_dd/igrida-fs1/$USER/Outputs/Outputs_JobID</span></code>. To combine those matrices, the user can then do a weighted average depending on the number of iterations for instance.</p>
+<p><strong>Usage on Igrida frontend (batch mode):</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>oarsub -S ./oar_aqua.sh
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>Script Options:</strong></dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">OAR</span> <span class="pre">-n</span> <span class="pre">[1]</span></code>: name of the job.</li>
+<li><code class="docutils literal"><span class="pre">OAR</span> <span class="pre">-l</span> <span class="pre">nodes=[2],</span> <span class="pre">walltime=[3]</span></code>: [2] is the number of nodes to use. It should always be 1 so that <code class="docutils literal"><span class="pre">main.py</span></code> can use all the processes on the node, and no more than 1 because it can not manage several nodes (only processes). [3] is the limit of running time for the experiment with format hh:mm:ss.</li>
+<li><code class="docutils literal"><span class="pre">OAR</span> <span class="pre">-p</span> <span class="pre">[4]</span></code>: condition on the resources to use (for instance for Aquaint we request a node with at least 45GB memory).</li>
+<li><code class="docutils literal"><span class="pre">OAR</span> <span class="pre">-O</span> <span class="pre">[5]</span></code>: output log file.</li>
+<li><code class="docutils literal"><span class="pre">OAR</span> <span class="pre">-E</span> <span class="pre">[6]</span></code>: error log file.</li>
+<li><code class="docutils literal"><span class="pre">EXECUTABLE=[7]</span></code>: path to <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+</ul>
+</dd>
+</dl>
+<p>The other options (DATA, ITER...) in the script are those of the <code class="docutils literal"><span class="pre">main.py</span></code> programm introduced previously.</p>
+<p><strong>Examples:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>a typical run on <em>Aquaint</em>: <code class="docutils literal"><span class="pre">oarsub</span> <span class="pre">-S</span> <span class="pre">./oar_aqua.sh</span></code> (Default is OVA mode, 150 iterations per sample)</li>
+<li>a typical run on <em>AUDIO</em> <code class="docutils literal"><span class="pre">oarsub</span> <span class="pre">-S</span> <span class="pre">./oar_aqua.sh</span></code> (Default is 2000 iterations, HMM mixed type 1 and 2, 14 states total)</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="general-structure-of-the-sic-implementation">
+<h2><a class="toc-backref" href="#id4">General structure of the SIC implementation</a><a class="headerlink" href="#general-structure-of-the-sic-implementation" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">main.py</span></code> is a wrapper for the <code class="docutils literal"><span class="pre">run_*</span></code> functions. It sets up the correct parameters for the run, apply SIC and then stores and evaluates the matrix.</li>
+<li><code class="docutils literal"><span class="pre">run_basic.py</span></code>, <code class="docutils literal"><span class="pre">run_ova.py</span></code> and <code class="docutils literal"><span class="pre">run_wem.py</span></code> takes care of running SIC (respectively normal SIC, SIC with OVA, SIC with EM similarity).</li>
+<li><code class="docutils literal"><span class="pre">utils/one_step.py</span></code> contains the code for a SIC iteration one one process/thread.</li>
+<li><code class="docutils literal"><span class="pre">utils/annotate.py</span></code> and <code class="docutils literal"><span class="pre">utils/annotation_scripts</span></code> contains all scripts relevant to synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">utils/classify.py</span></code> and <code class="docutils literal"><span class="pre">utils/classificationon_scripts</span></code> contains all scripts relevant to training and application of the classifiers.</li>
+<li><code class="docutils literal"><span class="pre">utils/eval.py</span></code> contains the functions for evaluation of a clustering and <code class="docutils literal"><span class="pre">utils/evaluation_retrieval.prl</span></code> deals with mAP evaluation.</li>
+<li><code class="docutils literal"><span class="pre">evaluation_clustering</span></code> and <code class="docutils literal"><span class="pre">evaluation_retrieval.py</span></code> are wrappers for the previous evaluation scripts.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="options-and-configuration-files">
+<h2><a class="toc-backref" href="#id5">Options and Configuration files</a><a class="headerlink" href="#options-and-configuration-files" title="Permalink to this headline">¶</a></h2>
+<p>The following is the list of the customizable options found in the configuration file and their roles:</p>
+<div class="section" id="general-options">
+<h3><a class="toc-backref" href="#id6">General options</a><a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
+<p>The options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">root_dir</span></code>: path to the folder extracted from the original archive.</li>
+<li><code class="docutils literal"><span class="pre">N</span></code>: number of iterations. Defaults to 50.</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code>: number of cores to use for the iterations (not counting the main process). Defaults to 20.</li>
+<li><code class="docutils literal"><span class="pre">locks</span></code>: number of locks/cells in the similarity matrix shared in memory. Default value computed at runtime.</li>
+<li><code class="docutils literal"><span class="pre">n_min</span></code>: minimum number of synthetic labels at each iteration. Defaults to 300.</li>
+<li><code class="docutils literal"><span class="pre">n_max</span></code>: maximum number of synthetic labels at each iteration. Defaults to 300.</li>
+<li><code class="docutils literal"><span class="pre">n_distrib</span></code>: type of synthetic annotation. RND is random annotation, OVA is the one-versus-all setting, and UNI is the combination of the two (n between <code class="docutils literal"><span class="pre">n_min</span></code> and <code class="docutils literal"><span class="pre">n_max</span></code> classes are used, and each class characterizes only one sample). Defaults to RND.</li>
+<li><code class="docutils literal"><span class="pre">training_size</span></code>: proportion of the dataset to use for training. Defaults to 5%.</li>
+<li><code class="docutils literal"><span class="pre">cvg_step</span></code>: check convergence criterion every <code class="docutils literal"><span class="pre">cvg_step</span></code> step if positive. Defaults to -1.</li>
+<li><code class="docutils literal"><span class="pre">cvg_criterion</span></code>: convergence criterion. Defaults to 0.001.</li>
+<li><code class="docutils literal"><span class="pre">similarity</span></code>: type of similarity. BIN is the default SIC, WBIN is the first weighted scores variant, UWBIN the second one. Similarly, PROB, WPROB and UWPROB are the same but using probablistic scores instead of the basic binary scores (only coded for wapiti CRF which output probability of membership to a class for each sample). Finall WEM is for EM similarity. Defaults to BIN.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code>: dataset (NER, AUDIO, AUDIOTINY or AQUA). Defaults to NER.</li>
+<li><code class="docutils literal"><span class="pre">classifier</span></code>: type of classifier to use (CRF or HTK or DT). Defaults to CRF.</li>
+<li><code class="docutils literal"><span class="pre">task</span></code>: type of evaluation task (MCL or KNN). Defaults to MCL.</li>
+<li><code class="docutils literal"><span class="pre">temp</span></code>: temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">output</span></code>: output folder.</li>
+<li><code class="docutils literal"><span class="pre">root_dir</span></code></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="classifier-options-crf-htk-dt">
+<h3><a class="toc-backref" href="#id7">Classifier options (CRF, HTK, DT)</a><a class="headerlink" href="#classifier-options-crf-htk-dt" title="Permalink to this headline">¶</a></h3>
+<p>The common options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">binary</span></code>: path to local binary of the classifier (or in case of HTK, folder containing the binaries) if not installed globally.</li>
+<li><code class="docutils literal"><span class="pre">oar_binary</span></code>: path to binary compiled for Igrida machines.</li>
+</ul>
+</div></blockquote>
+<p>For CRF and DT, you can then simply add a list of options as taken by the original classifier. For instance, the line <code class="docutils literal"><span class="pre">algo=rprop</span></code> in the configuration file will be translated as a call to wapiti with option <code class="docutils literal"><span class="pre">--algo</span> <span class="pre">rprop</span></code>.</p>
+<p>For HTK, the following specific options are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">hmm_topo</span></code>: topology of HMM. Defaults to 1,2.</li>
+<li><code class="docutils literal"><span class="pre">features</span></code>: list of the type of features to use, separated by commas (MFCC, LPC, PLP, LPCEPSTRA). Defaults to MFCC alone.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="evaluation-options">
+<h3><a class="toc-backref" href="#id8">Evaluation options</a><a class="headerlink" href="#evaluation-options" title="Permalink to this headline">¶</a></h3>
+<p>The common options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">binary</span></code>: path to local binary of the evaluation utilitary.</li>
+<li><code class="docutils literal"><span class="pre">oar_binary</span></code>: path to binary compiled for Igrida machines.</li>
+</ul>
+</div></blockquote>
+<p>For MCL, the following specific options are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">i</span></code>: inflation parameter. Defaults to 1.4.</li>
+<li><code class="docutils literal"><span class="pre">p</span></code>: pre-inflation parameter. Defaults to 1.0.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="dataset-options">
+<h3><a class="toc-backref" href="#id9">Dataset options</a><a class="headerlink" href="#dataset-options" title="Permalink to this headline">¶</a></h3>
+<p>The common options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">input</span></code>: input data (for NER, the text file containing the dataset; for AQUA, the folder containing the dataset; for AUDIO and AUDIOTINY the input can either be a folder containing precomputed folder (each set of features in a different subfolder named as &#8216;featureHTKidentifier_numberofcomponents&#8217;. Or it can either be a text file containing on its first line a path to the audio samples of the dataset and on the following lines, the list of HTK features to consider).</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code>: path to ground-truth.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code>: path to file containing a entity index to label mapping (use the result of <code class="docutils literal"><span class="pre">parse_data</span></code> in utils/parse.py for its generation).</li>
+</ul>
+</div></blockquote>
+<p>Additionally:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">crf_pattern</span></code>: wapiti pattern for a CRF classifier (NER, AQUA).</li>
+<li><code class="docutils literal"><span class="pre">dt_pattern</span></code>: pattern to select features for a weka decision tree (NER, AQUA).</li>
+<li><code class="docutils literal"><span class="pre">words_occurrences</span></code>: Structure to store the position of every occurrences of each sample for parsing (AQUA for OVA only).</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="additional-scripts">
+<h2><a class="toc-backref" href="#id10">Additional scripts</a><a class="headerlink" href="#additional-scripts" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plotting-similarity-distribution">
+<h3><a class="toc-backref" href="#id11">Plotting similarity distribution</a><a class="headerlink" href="#plotting-similarity-distribution" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python similarity_analysis.py [1] -n [2] -cfg [3] --mean --theo --help
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (unnormalized). The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder, usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-n</span></code>: number of samples to plot for each class. Defaults to 5.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">--mean</span></code>: if given, plot an average ROC curve for each ground-truth class.</li>
+<li><code class="docutils literal"><span class="pre">--theo</span></code>: if given, plot the comparison of the distribution against the theoretical model of the corresponding SIC variant.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p>This outputs pdf histograms plots of the distribution of similarities for several samples across the matrix and for several normalization parameters.</p>
+</div></blockquote>
+</div>
+<div class="section" id="convergence-analysis">
+<h3><a class="toc-backref" href="#id12">Convergence analysis</a><a class="headerlink" href="#convergence-analysis" title="Permalink to this headline">¶</a></h3>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>python convergence_analysis.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -o [10] -te [11] -in [12] -g [13] -cfg [14] -v [15] --debug --help
+</pre></div>
+</div>
+<p>where:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Default options are found in the <code class="docutils literal"><span class="pre">configuration.ini</span></code> file.</li>
+<li>[1] <code class="docutils literal"><span class="pre">-i,</span> <span class="pre">--iter</span></code>: number of classification iterations.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-t,</span> <span class="pre">--threads</span></code>: number of cores to use.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--dataset</span></code>: dataset to use.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-c,</span> <span class="pre">--classifier</span></code>: classifier to use.</li>
+<li>[5] <code class="docutils literal"><span class="pre">-ts,</span> <span class="pre">--trainsize</span></code>: proportion of dataset to use for training.</li>
+<li>[6] <code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--sim</span></code>: similarity type to use (EM not supported).</li>
+<li>[7] <code class="docutils literal"><span class="pre">-nmin</span></code>: minimum number of synthetic labels.</li>
+<li>[8] <code class="docutils literal"><span class="pre">-nmax</span></code>: maximum number of synthetic labels.</li>
+<li>[9] <code class="docutils literal"><span class="pre">-di,</span> <span class="pre">--distrib</span></code>: synthetic annotation mode (RND, UNI, OVA).</li>
+<li>[10] <code class="docutils literal"><span class="pre">-o,</span> <span class="pre">--output</span></code>: output folder.</li>
+<li>[11] <code class="docutils literal"><span class="pre">-te,</span> <span class="pre">--temp</span></code>: temporary folder.</li>
+<li>[12] <code class="docutils literal"><span class="pre">-in</span></code>: input data file.</li>
+<li>[13] <code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--ground</span></code>: ground-truth file.</li>
+<li>[14] <code class="docutils literal"><span class="pre">-cfg,</span> <span class="pre">--cfg_file</span></code>: provide a custom configuration file.</li>
+<li>[15] <code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code>: controls verbosity level (0 to 4).</li>
+<li><code class="docutils literal"><span class="pre">-db,</span> <span class="pre">--debug</span></code>: debug mode (save temporary files).</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+</div></blockquote>
+<p>Computes <code class="docutils literal"><span class="pre">N</span></code> iterations of SIC and compares the final similarity matrix to partial matrices in past iterations (see <code class="docutils literal"><span class="pre">steps</span></code> in <code class="docutils literal"><span class="pre">convergence_analysis.py</span></code>).</p>
+</div>
+<div class="section" id="confidence-analysis">
+<h3><a class="toc-backref" href="#id13">Confidence analysis</a><a class="headerlink" href="#confidence-analysis" title="Permalink to this headline">¶</a></h3>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>python confidence_analysis.py  [1] -cfg [2] --mean --theo --help
+</pre></div>
+</div>
+<p>where:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[1] : input similarity matrix. The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder and a <code class="docutils literal"><span class="pre">eval_*.log</span></code> file, containing the mAP results both usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+</div></blockquote>
+<p>Computes confidence scores for the input matrix and compares them to the corresponding mAP results.</p>
+</div>
+<div class="section" id="clustering-evaluation">
+<h3><a class="toc-backref" href="#id14">Clustering evaluation</a><a class="headerlink" href="#clustering-evaluation" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python evaluation_clustering.py [1] -i [2] -p [3] -t [4] -cfg [5] --mcl --help
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (unnormalized similarities or pre-treated MCL format). The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder, usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-i</span></code>: MCL inflation parameter. Defaults to 1.4.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-p</span></code>: MCL pre-inflation parameter. Defaults to 1.0.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-t</span></code>: number of cores to use for MCL.</li>
+<li>[5] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">-m,</span> <span class="pre">--mcl</span></code>: if present, the script expects an input matrix in MCL label format.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p>This outputs the results of the MCL clustering with the given inflation and pre-inflation parameters.</p>
+</div></blockquote>
+</div>
+<div class="section" id="map-evaluation">
+<h3><a class="toc-backref" href="#id15">mAP evaluation</a><a class="headerlink" href="#map-evaluation" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python evaluation_retrieval.py [1] -s [2] -ov [3] -cfg [4] --help
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (unnormalized similarities or pre-treated MCL format). The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder, usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-s</span></code>: number of samples to evaluate (<code class="docutils literal"><span class="pre">s</span></code> first samples of the ground-truth). If -1, the use the whole set. Defaults to -1</li>
+<li>[3] <code class="docutils literal"><span class="pre">-ov</span></code>: If positive, assume the resulting script was obtained in OVA mode for the sample of index <code class="docutils literal"><span class="pre">ov</span></code>. Defaults to -1.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p>This outputs the results of the neighbour retrieval evaluation on the given matrix.</p>
+</div></blockquote>
+</div>
+<div class="section" id="visualization">
+<h3><a class="toc-backref" href="#id16">Visualization</a><a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python utils/plot.py [1] -cfg [2]
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (generally unnormalized).</li>
+<li>[2] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+</ul>
+<p>By default this outputs a piechart representation of the ground-truth clustering and a heatmap and MDS/TSNE representation of the similarity matrix. See the <code class="docutils literal"><span class="pre">plot.py</span></code> script for more visualization tools.</p>
+</div></blockquote>
+</div>
+<div class="section" id="the-parse-py-script">
+<h3><a class="toc-backref" href="#id17">The parse.py script</a><a class="headerlink" href="#the-parse-py-script" title="Permalink to this headline">¶</a></h3>
+<p>The parse.py and parse_stat.py script can be used to generate some information on the input data that may be required for some experiments.</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">utils/ground_truth_qrel</span></code> can be used to generate .qrel files from a ground-truth as needed by the <code class="docutils literal"><span class="pre">evaluation_retrieval.prl</span></code> script for mAP evaluation.</li>
+<li><code class="docutils literal"><span class="pre">utils/parse_data</span></code> can be used to generate the <code class="docutils literal"><span class="pre">index_to_label</span></code> and <code class="docutils literal"><span class="pre">label_to_index</span></code> mapping needed for readable outputs.</li>
+</ul>
+</div></blockquote>
+<p>Additionally for the AUDIO database: Scripts in <code class="docutils literal"><span class="pre">./Data/AUDIO/Scripts</span></code> and <code class="docutils literal"><span class="pre">./Data/AUDIO</span></code> can be used to extract features, compute a DTW (R dtw library) and prepare the AUDIO database.</p>
+<dl class="docutils">
+<dt>Finally, for Aquaint:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">parse_stat/retrieve_aqua_entities</span></code> can be used to count number of occurrences for each file to be stored into a file later used for parsing (this file was already computed and is <code class="docutils literal"><span class="pre">aqua_entities_list</span></code> in Data/AQUAINT/entity_occurrences_aqua and src/Precomputed).</li>
+<li><code class="docutils literal"><span class="pre">parse_stat/retrieve_aqua_occurrences</span></code> retrieves, for each sample, all its occurrences in the database and stores their position in a pickle file (1 file = 1 sample). The resulting files are used in OVA mode for Aquaint for parsing. The folder containing the pickle files should be given in the configuration file in section [AQUA], entry <code class="docutils literal"><span class="pre">words_occurrences</span></code>. (note for the full Aquaint dataset this results in about 26000 files for 1.2 gigabuytes).</li>
+<li><code class="docutils literal"><span class="pre">parse_stat/count_aqua_docs_scores</span></code>: computes a <code class="docutils literal"><span class="pre">relevance</span></code> score for each document in the Aquaint database. The higher the score, the more rare words the documents contains. This file is already computed and can be found in Data/AQUAINT/entity_occurrences_aqua and src/Precomputed.</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id18">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="main-python-dependencies">
+<h3><a class="toc-backref" href="#id19">Main Python dependencies</a><a class="headerlink" href="#main-python-dependencies" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>Tested with Python 2.7</li>
+<li>Numpy</li>
+<li>Scipy</li>
+<li>Matplotlib</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="external-libraries">
+<h3><a class="toc-backref" href="#id20">External libraries</a><a class="headerlink" href="#external-libraries" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>[MCL](<a class="reference external" href="http://micans.org/mcl/">http://micans.org/mcl/</a>), Markov clustering algorithm</li>
+<li>[Wapiti](<a class="reference external" href="http://wapiti.limsi.fr/">http://wapiti.limsi.fr/</a>), CRF implementation</li>
+<li>[HTK](<a class="reference external" href="http://htk.eng.cam.ac.uk/">http://htk.eng.cam.ac.uk/</a>), HMM implementation</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -109,6 +495,35 @@
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Source code Documentation</a></li>
+<li><a class="reference internal" href="#readme-sic-similarity-by-iterative-classifications">README - SIC: Similarity by Iterative Classifications</a><ul>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#main-script">Main script</a></li>
+<li><a class="reference internal" href="#running-on-igrida">Running on Igrida</a></li>
+<li><a class="reference internal" href="#general-structure-of-the-sic-implementation">General structure of the SIC implementation</a></li>
+<li><a class="reference internal" href="#options-and-configuration-files">Options and Configuration files</a><ul>
+<li><a class="reference internal" href="#general-options">General options</a></li>
+<li><a class="reference internal" href="#classifier-options-crf-htk-dt">Classifier options (CRF, HTK, DT)</a></li>
+<li><a class="reference internal" href="#evaluation-options">Evaluation options</a></li>
+<li><a class="reference internal" href="#dataset-options">Dataset options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-scripts">Additional scripts</a><ul>
+<li><a class="reference internal" href="#plotting-similarity-distribution">Plotting similarity distribution</a></li>
+<li><a class="reference internal" href="#convergence-analysis">Convergence analysis</a></li>
+<li><a class="reference internal" href="#confidence-analysis">Confidence analysis</a></li>
+<li><a class="reference internal" href="#clustering-evaluation">Clustering evaluation</a></li>
+<li><a class="reference internal" href="#map-evaluation">mAP evaluation</a></li>
+<li><a class="reference internal" href="#visualization">Visualization</a></li>
+<li><a class="reference internal" href="#the-parse-py-script">The parse.py script</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#main-python-dependencies">Main Python dependencies</a></li>
+<li><a class="reference internal" href="#external-libraries">External libraries</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
