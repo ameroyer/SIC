@@ -1,0 +1,914 @@
+#!/usr/bin/perl -w
+
+# Author: Vincent Claveau
+# Contact: vincent.claveau@irisa.fr
+# Last modif date: 25 May 2007
+
+# Purpose: sert a effectuer l'evaluation de resultats d'un SRI
+#          en fonction des reponses attendues
+
+# Comment: repose sur R pour les test stat, trec-eval pour le calcul de 
+#          certaines mesures et gnuplot pour tracer les courbes R-P ; 
+#          tous deux doivent etre dans le path
+
+# Code :
+
+
+###################################################################
+##                          INITIALISATIONS                      ##
+###################################################################
+
+use strict;
+use locale;
+binmode(STDOUT,':utf8'); # si le terminal est en utf8
+binmode(STDERR,':utf8'); # si le terminal est en utf8
+
+my $unique = $$;
+my $prg = $0;
+if ($0 =~ /.+\/([^\/]+\.[^\.\/]+)$/)
+  { $prg = $1 }
+
+use constant VERBOSE => 0;
+use constant INFINI => 2**31;
+
+
+##################################################################
+# FICHIERS
+
+my $file_queries;
+my $file_qrel;
+my $file_compare;
+my $file_run;
+my $file_query;
+my $file_index_to_label;
+
+my $prefix = "toto";
+
+
+##################################################################
+# FLAG
+
+my $bool_display = 0;
+my $bool_qid_in_line = 0; # les identifiants requetes sont donnes
+                          # en ligne de commande
+my $bool_qid_in_file = 0; # par defaut, les identifiants requetes sont donnes
+                          # par le fichier des requetes
+my $bool_map_only = 0; # calculer que la map ; non par defaut
+my $bool_no_comp = 0; # par defaut on se compare a quelque chose (de different)
+my $bool_stat = 1; # appel a R
+my $bool_trec = 1; # appel a trec-eval
+
+##########################################################################
+# VARIABLES DIVERSES
+
+#my @tab_DCV = (10,20,50,75,100,150,200,300,400,500,750,1000,2000,5000,10000,20000,50000,100000);
+#my @tab_DCV = (10,50,100,500,1000,2000,3000,4000,5000);
+my @tab_DCV = (1,5,10,20,50,100,500,1000,2000,3000);
+my @tab_query_id;
+my $qid_string;
+my $prefix_qid_string = '';
+
+
+my $display = 0;
+
+##########################################################################
+
+
+my $usage = "Usage : $prg 
+Mandatory
+argument
+*\t -out       <prefixe des fichiers de sortie>
+*\t -qrel      <fichier de pertinence TREC>
+*\t -run       <fichier resultat du run> : run a evaluer
+ \t -ref       <fichier resultat du run de comparaison> : default is same as run
+*\t -qid       <id des requetes, separes par des virgules sans espace ou sous la forme 1-50; all means all>
+ \t -pqid      <prefix of query id, such as qtest -> qtest1, qtest2...>
+
+or
+
+*\t -out       <prefixe des fichiers de sortie>
+*\t -qrel      <fichier de pertinence TREC>
+*\t -run       <fichier resultat du run actuel>
+ \t -ref       <fichier resultat du run de comparaison> : default is same as run
+*\t -que       <fichier requete, format Lemur-like>
+
+ \t -nostat    <do not perform signifance tests>
+ \t -notrec    <do not rely on trec_eval>
+
+ \t -help      : this help page  
+\n";
+
+die $usage unless ($#ARGV > -1);
+
+while ($#ARGV > -1 and $ARGV[0] =~ /^-/) {
+  $_ = shift;
+  if (/^-out/)                { $prefix = shift }
+  elsif (/^-qid/)             { $qid_string =  shift; $bool_qid_in_line = 1 }
+  elsif (/^-pqid/)            { $prefix_qid_string =  shift }
+  elsif (/^-que/)             { $file_query = shift; $bool_qid_in_file = 1 }
+  elsif (/^-qre/)             { $file_qrel = shift }
+  elsif (/^-ref/)             { $file_compare = shift }
+  elsif (/^-run/)             { $file_run = shift }
+  elsif (/^-idtf/)            { $file_index_to_label = shift;}
+  elsif (/^-map/)             { $bool_map_only = 1 }
+
+  elsif (/^-nos/)             { $bool_stat = 0 }
+  elsif (/^-not/)             { $bool_trec = 0 }
+
+  elsif (/^-?-h/)             { die $usage }
+
+  else                        { die "unknown option $_!\n\n $usage\n" }
+}
+
+if (not defined($file_compare)) { $file_compare = $file_run; $bool_no_comp = 1 }
+if (not -f $file_run)           { die "$prg unable to find file $file_run\n" }
+if (not -f $file_compare)       { die "$prg unable to find file $file_compare\n" }
+if ($bool_qid_in_line and $qid_string eq 'all')
+  { $bool_qid_in_file=0; $bool_qid_in_line=-1 }
+if ($bool_qid_in_line and $bool_qid_in_file)
+  { die "$prg unable to use both -que and -qid options: choose only one of these options\n" }
+
+if ($bool_stat and not qx(R --version) =~ /R version /)
+  { $bool_stat = 0; print STDERR "$prg: R not found, no significance test will be done\n" }
+if ($bool_trec and not qx(trec_eval -v 2>&1) =~ /trec_eval version 8/)
+  { $bool_trec = 0; print STDERR "$prg: trec_eval not found, IAP will not be computed\n" }
+
+
+##################################################################################
+##################################################################################
+##                                                                              ##
+##                                   BODY                                       ##
+##                                                                              ##
+##################################################################################
+##################################################################################
+
+
+print STDERR "Reading query id...\n" if (VERBOSE > 2);
+
+
+# lecture des identifiants requete si besoin
+if ($bool_qid_in_line==-1)
+  {}
+elsif ($bool_qid_in_file)
+  {
+    print STDERR "Reading query file\n" if (VERBOSE > 2);
+    open(IN,$file_query) or die "$prg unable to read $file_query $!\n";
+    while(<IN>)
+      {
+        if (/<DOC ([^>]+)>/)
+          { push(@tab_query_id,$1) }
+      }
+    close IN;
+  }
+else
+  {
+    if ($qid_string =~ /^([0-9]+)-([0-9]+)/)
+      { @tab_query_id = map {$prefix_qid_string.$_} ($1..$2) }
+    else 
+      { @tab_query_id = split(',',$qid_string) }
+
+    # on fait un sous-ensemble du fichier ne concernant que les 
+    # requetes donnees dans la ligne de commande
+    # A FAIRE mieux que ca, le grep prend plus de temps que le parcours Perl
+    #system("egrep '^(".join("|",@tab_query_id).") ' $file_compare > /tmp/$prg.$unique.res_compare.filtre");
+    #$file_compare = "/tmp/$prg.$unique.res_compare.filtre";
+
+    #if ($bool_no_comp)
+    #  { $file_run = $file_compare }
+    #else 
+    #  {
+    #    system("egrep '^(".join("|",@tab_query_id).") ' $file_run > /tmp/$prg.$unique.res_run.filtre");
+    #    $file_run = "/tmp/$prg.$unique.res_run.filtre";
+    #  }
+  }
+
+
+# lecture du qrel, on ne retient que les reponses aux requetes qui 
+# nous interessent et que les requetes qui ont des reponses
+open(IN,$file_qrel) or die "$prg unable to read $file_qrel $!\n";
+my %tab_qrels = ();
+my %hash_query_id = map {$_=>1} @tab_query_id;
+while (<IN>)
+  {
+    if (/^([^\t]+)\tQ0\t([^\t \n]+)/o) 
+      { 
+        my $req = $1; my $doc = $2;
+	if (exists $hash_query_id{$req})
+          { $tab_qrels{$req}{$doc} = 1; }
+      }
+    elsif (/^([^ ]+) 0 ([^\t ]+) ([0-9\.\+]+)/o)
+      {
+        my $req = $1; my $doc = $2; my $relevance_number = $3;
+	if ($bool_qid_in_line==-1) { $hash_query_id{$req}=1; push(@tab_query_id,$req); }
+	if (exists $hash_query_id{$req} and $relevance_number>0)
+        { $tab_qrels{$req}{$doc} = 1; }
+      }
+  }
+close IN;
+
+# on verifie qu'on a de la verite terrain pour toutes les requetes examinees
+my @t_tmp; my @t_ignored;
+foreach my $qid (@tab_query_id)
+{
+    if (not exists $tab_qrels{$qid})
+    { push(@t_ignored,$qid) }
+    else
+    { push(@t_tmp,$qid) }
+}
+if ($prefix_qid_string eq '') { @tab_query_id = sort {$a<=>$b} @t_tmp }
+else { @tab_query_id = @t_tmp }
+print STDERR "$prg caution: no qrel info for queries @t_ignored\n" if (scalar(@t_ignored)>0);
+my $max_qid = $tab_query_id[-1];
+
+
+if (scalar(@tab_query_id) == 0) { die "$prg pb: no query identifiants\n" }
+elsif (VERBOSE>2)   { print STDERR "$prg: query set used: @tab_query_id\n" }
+my $nb_req = scalar(@tab_query_id);
+my $actual_query_nb = scalar(@tab_query_id);
+%hash_query_id = map {$_=>1} @tab_query_id;
+
+
+
+###############################################################################
+
+
+print "\n\n","#" x 80,"\n";
+print "#####                           comparison of                              #####\n";
+my $l1 = length($file_run);
+my $l2 = length($file_compare);
+print "#"," " x ((78-$l1)/2),$file_run," " x int(78-$l1-int(78-$l1)/2),"#\n";
+print "# "," " x 38,"to"," " x 37,"#\n";
+print "#"," " x ((78-$l2)/2),$file_compare," " x (79-$l2-(78-$l2)/2),"#\n";
+print "#" x 80,"\n\n\n";
+
+my @D1;
+my @D2;
+
+if (not $bool_map_only and $bool_trec)
+  {   
+    print STDERR "Appel a trec-eval...\n" if (VERBOSE > 2);
+
+    # appel de trec-eval sur le run actuel
+    system("trec_eval -o -q $file_qrel  $file_run > $prefix.eval.o.run.txt");
+    system("trec_eval -a -q $file_qrel  $file_run > $prefix.eval.a.run.txt");
+ 
+    if ($bool_no_comp)
+      {
+        system("cp $prefix.eval.o.run.txt $prefix.eval.o.comp.txt");
+        system("cp $prefix.eval.a.run.txt $prefix.eval.a.comp.txt");
+      }
+    else
+      {
+        # appel de trec-eval sur le run de reference
+        system("trec_eval -o -q $file_qrel  $file_compare > $prefix.eval.o.comp.txt");
+        system("trec_eval -a -q $file_qrel  $file_compare > $prefix.eval.a.comp.txt");
+      }
+    
+ 
+    if ($bool_display)
+      { system("emacs  $prefix.eval.a.comp.txt $prefix.eval.a.run.txt &") }
+
+
+    #################################################################
+    #################################################################
+    # precision moyenne interpolee sur 11 points 
+    
+    print STDERR "Recuperation IAP...\n" if (VERBOSE > 2);
+
+    # lecture des resultats de chaque requete pour la reference dans le
+    # fichier genere par trec-eval; les resultats sont stockes dans
+    # le tableau %tab_prn1 que l'on initialise a 0
+    
+    my %tab_prn1;
+    foreach my $req (@tab_query_id)
+      { $tab_prn1{$req} = 0 } 
+    
+    open(REP,"$prefix.eval.a.comp.txt") or die "$prg unable to read $prefix.eval.a.comp.txt $!\n";
+    while (my $l = <REP>)
+      { 
+        if ($l =~ /11\-pt_avg[ \t]+([0-9]+)[ \t]+([0-9\.]+)/)
+          {
+            my $qid = $1; my $value = $2;
+            if (exists $tab_prn1{$qid})
+              {
+                $tab_prn1{$qid} = $value; 
+                if($value == 0) { warn "$prg caution: 11-pt-avg for req $qid (reference) == 0\n" } 
+              }
+          }
+      }
+    close REP;
+    
+    
+    # lecture des resultats de chaque requete pour le run actuel dans le
+    # fichier genere par trec-eval; les resultats sont stockes dans
+    # le tableau %tab_prn2 que l'on initialise a 0
+    my %tab_prn2;
+    if ($bool_no_comp)
+      { %tab_prn2 = %tab_prn1 }
+    else 
+      {
+        foreach my $req (@tab_query_id)
+          { $tab_prn2{$req} = 0 } 
+        
+        open(REP,"$prefix.eval.a.run.txt") or die "$prg unable o read $prefix.eval.a.run.txt $!\n";
+        while (my $l = <REP>)
+          { 
+            if ($l =~ /11-pt_avg[ \t]+([0-9]+)[ \t]+([0-9\.eE\+\-]+)/)
+              {  
+                my $qid = $1; my $value = $2;
+                if (exists $tab_prn2{$qid}) # que les requetes qu'on cherche
+                  {
+                    $tab_prn2{$qid} = $value; 
+                    if($value == 0) { warn "$prg caution: 11-pt-avg for req $qid (run) == 0\n" } 
+                  }
+              }
+          }
+        close REP;
+      }
+    
+    # on fait la comparaison entre les deux
+    my $D1 = 0; my $D2 = 0;
+    foreach my $qid (@tab_query_id)
+      {
+        push(@D1,$tab_prn1{$qid}); push(@D2,$tab_prn2{$qid}); 
+        $D1 += $tab_prn1{$qid}; $D2 += $tab_prn2{$qid};
+      }
+    undef %tab_prn1; undef %tab_prn2; 
+    
+    print "\n***************** 11-pt interpolated average precision ******************\n";
+    
+    print "prn moyen : ";
+    my $moy1 = 100*$D1/$actual_query_nb;
+    my $moy2 = 100*$D2/$actual_query_nb;
+    my $perc;   
+    if ($moy1 == 0 and $moy2 == 0)  { $perc = 0 }
+    elsif ($moy1 == 0)              { $perc = "+inf" }
+    else                            { $perc = 100 * ($moy2-$moy1) / $moy1 }
+
+    print "prn moyen : ",sprintf("%.2f",$moy1),"\t",sprintf("%.2f",$moy2),"\t",($perc eq "+inf")?$perc:sprintf("%.2f",$perc)," %\n";
+    
+    if (not $bool_no_comp and $bool_stat) { Tests_statistiques(\@D1,\@D2) }
+
+    
+    ######################################################################
+    # construction du graphe rappel-precision avec points interpoles
+    
+    print STDERR "Construction graphe R-P...\n" if (VERBOSE > 2);
+
+    open(REP,"$prefix.eval.o.comp.txt") or die "$prg unable to read $prefix.eval.o.comp.txt $!\n";
+    open(PLOT, "> $prefix.comp.data.rappel-precision.plot") or die "$prg unable to write $prefix.comp.data.rappel-precision.plot $!\n";
+    my $num_query_answered = 0;
+    while (my $l = <REP>)
+      {
+        if ($l =~ /Queryid \(Num\):\t[0-9]+/)
+          { $num_query_answered++ }
+        elsif ($l =~ /Queryid \(Num\):\tAll/)
+          {
+            <REP>; <REP>; <REP>; <REP>; <REP>;
+            for (my $i = 0; $i < 11; $i++)
+              {
+                $l = <REP>;
+                if ($l =~ /at ([0-9\.]+) +([0-9\.]+)/)
+                  # NB on retablit le bon nombre de doc
+                  { print PLOT "$1\t",$2*$num_query_answered/$actual_query_nb,"\n"; }
+                else 
+                  { warn "$prg : pb format $prefix.eval.o.comp.txt $l\n"; }
+              }
+          }
+      }
+    close REP;
+    close PLOT;
+    
+    open(REP,"$prefix.eval.o.run.txt") or die "$prg unable to read $prefix.eval.o.run.txt $!\n";
+    open(PLOT, "> $prefix.run.data.rappel-precision.plot") or die "$prg unable to write $prefix.run.data.rappel-precision.plot $!\n";
+    $num_query_answered = 0;
+    while (my $l = <REP>)
+      {
+        if ($l =~ /Queryid \(Num\):\t[0-9]+/)
+          { $num_query_answered++ }
+        elsif ($l =~ /Queryid \(Num\):\tAll/)
+          {
+            <REP>; <REP>; <REP>; <REP>; <REP>;
+            for (my $i = 0; $i < 11; $i++)
+              {
+                $l = <REP>;
+                if ($l =~ /at ([0-9\.]+) +([0-9\.]+)/)
+                  # NB on retablit le bon nombre de doc
+                  { print PLOT "$1\t",$2*$num_query_answered/$actual_query_nb,"\n"; }
+                else 
+                  { warn "$prg : pb format $prefix.eval.o.run.txt $l\n"; }
+              }
+          }
+      }
+    close REP;
+    close PLOT;
+    
+    
+    open(COMM_PLOT, "> $prefix.commandes.plot") or die "$prg unable to write $prefix.commanndes.plot $!\n";
+    
+    print COMM_PLOT "set terminal postscript eps enhanced color solid \"Times-Roman\" 20\n";
+    print COMM_PLOT "set encoding iso_8859_1\n";
+    print COMM_PLOT "#set missing\"?\"\n";
+    print COMM_PLOT "set output \"$prefix.rappel_precision.eps\"\n";
+    print COMM_PLOT "set xlabel \"Rappel\"\n";
+    print COMM_PLOT "set ylabel \"Précision\"\n";
+    print COMM_PLOT "set style line 1 lt 1 lw 2 pt 1 ps 1\n";
+    print COMM_PLOT "set style line 2 lt 2 lw 2 pt 2 ps 1\n";
+    print COMM_PLOT "set style line 3 lt 3 lw 2 pt 3 ps 1\n";
+    print COMM_PLOT "set style line 4 lt 4 lw 2 pt 4 ps 1\n";
+    print COMM_PLOT "plot [0:1] [0:1] '$prefix.run.data.rappel-precision.plot' using 1:2 smooth unique title 'SRI avec extension'  with linespoints ls 1";
+    print COMM_PLOT ", '$prefix.comp.data.rappel-precision.plot' using 1:2 smooth unique title 'SRI sans extension' with linespoints ls 2\n";
+    close COMM_PLOT;
+    
+    system("gnuplot $prefix.commandes.plot");
+    if ($bool_display) 
+      { system("gv $prefix.rappel_precision.eps &") }
+    
+    
+  } # if (not $bool_map_only)
+
+
+#################################################################
+# calcul autres mesures d'evaluation
+
+print STDERR "Lecture donnees pour autres mesures...\n" if (VERBOSE > 2);
+
+# on recupere les donnees
+
+# les tab_rel contiennent les rangs des docs pertinents
+my %tab_rel1;# tableau regroupant pour chaque requete les rangs 
+             # des documents pertinents retrouvés pour la reference
+open(REP,$file_compare) or die "$prg unable to read $file_compare $!\n";
+my %tab_rel_found1 = ();
+while (<REP>)
+  {
+    #if (/^([0-9]+) Q0 ([^\t ]+) ([0-9]+)/o)
+    #  {
+#	my $qid = $1; my $docid = $2; my $rank = $3;
+      my ($qid,$vide,$docid,$rank) = split();
+      if ($rank<1) { print ($qid); print ($docid); die "$prg pb reading $file_compare : ranks must be >= 1\n$_\n"}
+      if ($prefix_qid_string eq '' and $qid>$max_qid)
+      {
+	  print STDERR "stop reading file after qid $qid\n"; 
+	  last;
+      }
+      #print "$qid,$docid,$rank\n";
+      if (exists $tab_qrels{$qid}{$docid})
+          # c'est une bonne reponse
+      {
+	  if (exists $tab_rel_found1{$qid}{$docid})
+	  { warn "$prg: doc $docid already retrieved for query $qid\n" }
+	  else
+	  { push(@{$tab_rel1{$qid}},$rank) }
+	  
+	  $tab_rel_found1{$qid}{$docid} = $rank;
+      }
+    #  }
+    #else { print STDERR "$prg : format etrange ds $file_compare : $l";}
+  }
+close REP;
+
+
+# on verifie qu'on a des reponses pour chaque requete
+my @tmp_qid_no_answer = (grep {not exists $tab_rel1{$_}} @tab_query_id);
+if (scalar(@tmp_qid_no_answer)>0)
+{
+print STDERR "$prg caution: no good answer in index 1 for query: @tmp_qid_no_answer\n";
+}
+
+
+my %tab_rel2; # tableau regroupant pour chaque requete les rangs 
+              # des documents pertinents retrouvés pour le run actuel
+my %tab_rel_found2;
+if ($bool_no_comp)
+  { %tab_rel2 = %tab_rel1 }
+else
+  {
+    open(REP,$file_run) or die "$prg unable to read $file_run $!\n";
+    while (<REP>)
+      {
+        #if (/^([0-9]+) Q0 ([^\t ]+) ([0-9]+)/)
+        #  {
+        #    my $qid = $1; my $docid = $2; my $rank = $3;
+
+	    my ($qid,$vide,$docid,$rank) = split();
+	    if ($rank<1) { die "$prg pb reading $file_run: ranks must be >= 1\n$_\n"}
+	    if ($prefix_qid_string eq '' and $qid>$max_qid)
+	    {
+		print STDERR "stop reading file after qid $qid\n"; 
+		last;
+	    }
+
+            if (exists $tab_qrels{$qid}{$docid})
+              {
+                if (exists $tab_rel_found2{$qid}{$docid})
+                  { warn "$prg: doc $docid already retrieved for query $qid index 2\n" }
+                else
+                  { push(@{$tab_rel2{$qid}},$rank) }
+                
+                $tab_rel_found2{$qid}{$docid} = $rank;
+              }
+         # }
+      }
+    close REP;
+
+    # on verifie qu'on a des reponses pour chaque requete
+    my @tmp_qid_no_answer = (grep {not exists $tab_rel2{$_}} @tab_query_id);
+    if (scalar(@tmp_qid_no_answer)>0)
+    { print STDERR "$prg caution: no good answer in index 2 for query: @tmp_qid_no_answer\n"; }
+
+  }
+
+
+if (VERBOSE > 2)
+{
+    foreach my $req (keys %tab_rel_found1)
+    {
+	print "$req\n";
+	foreach  (grep {$tab_rel_found1{$req}{$_} < 10000 and (not exists $tab_rel_found2{$req} or not exists $tab_rel_found2{$req}{$_})} keys %{$tab_rel_found1{$req}})
+	{
+	    print "\tdoc $_ trouvé dans syst1 (rang = $tab_rel_found1{$req}{$_}) et pas dans syst2  \n";
+	}
+	if (exists $tab_rel_found2{$req})
+	{
+	    foreach  (grep {$tab_rel_found2{$req}{$_} < 10000 and (not exists $tab_rel_found1{$req} or not exists $tab_rel_found1{$req}{$_})} keys %{$tab_rel_found2{$req}})
+	    {
+		print "\tdoc $_ trouvé dans syst2 (rang = $tab_rel_found2{$req}{$_})et pas dans syst1 \n";
+	    }
+	}
+    }
+}
+
+
+#######################################################################
+# calcul NIAP - Non Interpolated Average Precision
+# also known as MAP - Mean Average Precision in TREC
+
+print STDERR "Computing MAP (NIAP)...\n" if (VERBOSE > 2);
+
+@D1 = ();
+@D2 = ();
+my $nb_req_with_qrel = 0; # il peut arriver que des requetes n'aient aucune 
+                          # reponse dans le qrel
+
+#Experimental : try to add label of query
+my %index_to_label = ();
+open(my $fh, '<:encoding(UTF-8)', $file_index_to_label)
+  or die "Could not open file '$file_index_to_label' $!";
+ 
+while (my $row = <$fh>) {
+  chomp $row;
+  my @aux = split(/\t/, $row);
+  $index_to_label{$aux[0]} = $aux[1];
+}
+
+my %tab_req1; my %tab_req2; 
+foreach my $req (@tab_query_id)
+  {
+    @{$tab_req1{$req}} = (exists $tab_rel1{$req})?(sort {$a<=>$b} @{$tab_rel1{$req}}):();
+    # @tab_req1 = (2,40,53,68,90,110,523,955,10056...)
+    
+    my @tab_req2;
+    if ($bool_no_comp)
+      { $tab_req2{$req} = $tab_req1{$req} }
+    else
+      { @{$tab_req2{$req}} = (exists $tab_rel2{$req})?sort {$a<=>$b} @{$tab_rel2{$req}}:() }
+   
+    my $AP = scalar(keys %{$tab_qrels{$req}});
+
+    if (not $AP == 0) # normalement impossible, filtré avant
+      {
+	$nb_req_with_qrel++;
+	my $P_seuil_doc1 = 0; my $P_seuil_doc2 = 0;
+        
+	for(my $i = 0; $i < scalar(@{$tab_req1{$req}}); $i++)
+          # calcul de la précision à chaque doc pertinent trouvé
+          { 
+	      $P_seuil_doc1 += ($i+1)/$tab_req1{$req}[$i];
+	  }
+
+        if ($bool_no_comp)
+          { $P_seuil_doc2 = $P_seuil_doc1 }
+        else
+          {
+            for(my $i = 0; $i < scalar(@{$tab_req2{$req}}); $i++)
+              {
+		  if ($tab_req2{$req}[$i] < 3000)
+		  { $P_seuil_doc2 += ($i+1)/$tab_req2{$req}[$i] }
+	      }
+          }
+
+	# on prend en compte les docs pertinents non retrouves
+	# en divisant par $AP (tous les pertinents) au lieu de 
+        # $#tab_req1+1 (tous les pertinents retrouvés), ça revient
+        # bien à donner une précision nulle aux docs non ramenés
+        my $P1 = 100*$P_seuil_doc1/$AP;
+        my $P2 = 100*$P_seuil_doc2/$AP;
+
+        push(@D1,$P1);
+        push(@D2,$P2);
+
+	# pour avoir les resultats req par req, decommenter :
+	my $truc = $index_to_label{$req};
+	print "$req $truc \t",(int 100*$P1)/100, "\t", (int 100*$P2)/100,"\t";
+	if ($P1==0) {print  "inf\n"} else { print 100*$P2/$P1," %\n"; }
+	#print "req $req : ", (int 100*$P1)/100, "  ", (int 100*$P2)/100,"\n";
+	#print "\tdif abs = ",(int (100*($P2-$P1)))/100,"\tdif rel = ",($P1==0)?"+inf":int (100*($P2-$P1)/$P1),"\n";
+        #print "AP = $AP\nPseuil = $P_seuil_doc1\t$P_seuil_doc2\n@tab_req1\n@tab_req2\n\n"; <STDIN>;
+	
+      }
+    else { print "req $req: no relevant doc in qrel\n" }
+  }
+
+my ($moy1,$ec1) = Moyenne_EcartType($nb_req_with_qrel,@D1);
+my ($moy2,$ec2) = Moyenne_EcartType($nb_req_with_qrel,@D2);
+
+my $perc = 0;
+if ($moy1 == 0 and $moy2 == 0) { $perc = 100 }
+elsif ($moy1 == 0) { $perc = "+inf" }
+else { $perc = 100 * ($moy2-$moy1) / $moy1 }
+my $NIAP = $perc;
+
+# micro-avg MAP
+my @microAvg = ();
+for(my $i=0; $i<$#D1+1; $i++)
+{
+    my $P1 = $D1[$i];
+    my $P2 = $D2[$i];
+    my $improv = 10;
+    if (not $P1==0) { $improv = $P2/$P1 - 1 }
+    push(@microAvg,$improv)
+}
+my ($mmoy,$mec) = Moyenne_EcartType($nb_req_with_qrel,@microAvg);
+my $microMAP_improv = 100*$mmoy;
+
+print "\n*************** Non-interpolated average precision (NIAP - MAP) ************\n";
+print "\nAvg-prec. moy. (ec) : ",sprintf("%.2f",$moy1)," ($ec1)\t",sprintf("%.2f",$moy2)," ($ec2)\t",($perc eq "+inf")?$perc:sprintf("%.4f",$perc)," %  microAvg = ",sprintf("%.4f",$microMAP_improv),"%\n";
+
+if (not $bool_no_comp and $bool_stat) { Tests_statistiques(\@D1,\@D2) }
+
+
+
+if (not $bool_map_only)
+  {
+    #######################################################################
+    # calcul P(x), R(x) et f(x)
+    
+
+    print "\n********************** DCV precisions ************************\n";
+    
+    # prec à differents seuils de doc
+    
+    foreach my $seuil (@tab_DCV)
+      {
+        print STDERR "Computing P,R,f for DCV = $seuil...\n" if (VERBOSE > 2);
+
+
+
+        my @D_P = ();         my @D_R = ();          my @D_f = ();   
+        my @Dlog_P = ();      my @Dlog_R = ();       my @Dlog_f = ();
+        my @Dratio_P = ();    my @Dratio_R = ();     my @Dratio_f = ();
+        my @tab_ec1_P = ();   my @tab_ec1_R = ();    my @tab_ec1_f = ();
+        my @tab_ec2_P = ();   my @tab_ec2_R = ();    my @tab_ec2_f = ();
+        
+        
+        foreach my $req (@tab_query_id)
+          {
+            #my @tab_req1 = (exists $tab_rel1{$req})?sort {$a<=>$b} @{$tab_rel1{$req}}:();
+            # @tab_req1 = (2,40,53,68,90,110,523,955,10056...)
+            #my @tab_req2 = (exists $tab_rel2{$req})?sort {$a<=>$b} @{$tab_rel2{$req}}:();
+            
+            my $AP = scalar(keys %{$tab_qrels{$req}});
+            
+            if (not $AP == 0)
+              {
+                my $nb_doc1 = 0; my $nb_doc2 = 0;
+                
+                for(my $i = 0; $i < scalar(@{$tab_req1{$req}}) and $tab_req1{$req}[$i] <= $seuil; $i++)
+                  { $nb_doc1 = $i+1 }
+                
+                for(my $i = 0; $i < scalar(@{$tab_req2{$req}}) and $tab_req2{$req}[$i] <= $seuil; $i++)
+                  { $nb_doc2 = $i+1 }
+                
+	
+                
+                # precision
+                my $P1 = 100*$nb_doc1/$seuil;
+                my $P2 = 100*$nb_doc2/$seuil;
+                push(@tab_ec1_P,$P1);
+                push(@tab_ec2_P,$P2);
+
+              
+                
+                # rappel (version avantageuse -> Min($AP,$seuil)
+                my $R1 = 100*$nb_doc1/Min($AP,$seuil); 
+                my $R2 = 100*$nb_doc2/Min($AP,$seuil); 
+                push(@tab_ec1_R,$R1);
+                push(@tab_ec2_R,$R2);
+                
+            
+                # f-mesure
+                my $f1 = ($P1+$R1>0)?2*$P1*$R1/($P1+$R1):0;
+                my $f2 = ($P2+$R2>0)?2*$P2*$R2/($P2+$R2):0;
+                push(@tab_ec1_f,$f1);
+                push(@tab_ec2_f,$f2);
+                
+              }
+          }
+        
+        print "######### DCV = $seuil docs #########\n";
+        
+        # precision
+        my ($moy1,$ec1) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec1_P);
+        my ($moy2,$ec2) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec2_P);
+        
+        if ($moy1 == 0 and $moy2 == 0)       { $perc = 0 }
+        elsif ($moy1 == 0)                   { $perc = "+inf" }
+        else                                 { $perc = 100 * ($moy2-$moy1) / $moy1 }
+        
+        print "\nP (ec) : ",sprintf("%.2f",$moy1)," ($ec1)\t",sprintf("%.2f",$moy2)," ($ec2)\t",($perc eq "+inf")?$perc:sprintf("%.2f",$perc)," %\n";
+        
+        if (not $bool_no_comp and $bool_stat) { Tests_statistiques(\@tab_ec1_P,\@tab_ec2_P) }
+        
+        
+        # rappel
+        ($moy1,$ec1) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec1_R);
+        ($moy2,$ec2) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec2_R);
+        
+        if ($moy1 == 0 and $moy2 == 0)     { $perc = 0 }
+        elsif ($moy1 == 0)                 { $perc = "+inf" }
+        else                               { $perc = 100 * ($moy2-$moy1) / $moy1 }
+        
+        print "\nR (ec) : ",sprintf("%.2f",$moy1)," ($ec1)\t",sprintf("%.2f",$moy2)," ($ec2)\t",($perc eq "+inf")?$perc:sprintf("%.2f",$perc)," %\n";
+        
+        if (not $bool_no_comp and $bool_stat) { Tests_statistiques(\@tab_ec1_R,\@tab_ec2_R) }
+        
+        
+        
+        # f-mesure
+        ($moy1,$ec1) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec1_f);
+        ($moy2,$ec2) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec2_f);
+        
+        if ($moy1 == 0 and $moy2 == 0)
+          { $perc = 0 }
+        elsif ($moy1 == 0)
+          { $perc = "+inf" }
+        else { $perc = 100 * ($moy2-$moy1) / $moy1 }
+        
+        print "\nf (ec) : ",sprintf("%.2f",$moy1)," ($ec1)\t",sprintf("%.2f",$moy2)," ($ec2)\t",($perc eq "+inf")?$perc:sprintf("%.2f",$perc)," %\n";
+        
+        if (not $bool_no_comp and $bool_stat) { Tests_statistiques(\@tab_ec1_f,\@tab_ec2_f) }
+        
+        
+        print "\n";
+      }
+    
+    
+
+    
+    
+    ###########################################################################
+    ### calcul R-precision ###
+
+    print STDERR "Computing R-precision...\n" if (VERBOSE > 2);
+    
+    print "\n**********************  R-precision  ************************\n";
+    
+    my $Rprec1 = 0;
+    my $Rprec2 = 0;
+    my @tab_ec1 = ();           my @tab_ec2 = (); 
+    
+    foreach my $req (@tab_query_id)
+      { 
+        # tableaux tries contenant les rangs des docs pertinents pour la requete $req
+        my @tab_req1 = (exists $tab_rel1{$req})?sort {$a<=>$b} @{$tab_rel1{$req}}:();
+        # @tab_req1 = (2,40,53,68,90,110,523,955,10056...)
+        my @tab_req2 = (exists $tab_rel2{$req})?sort {$a<=>$b} @{$tab_rel2{$req}}:();
+        
+        
+        my $AP = scalar(keys %{$tab_qrels{$req}});
+        if (not $AP == 0)
+          {
+            my $nb_doc1 = 0; my $nb_doc2 = 0;
+            
+            # on compte le nb de docs classés dans les N premiers
+            # où N est le nb de docs pertinents pour cette requete
+            for(my $i = 0; $i <= $#tab_req1 and $tab_req1[$i] <= $AP; $i++)
+              { $nb_doc1 = $i+1; }
+            for(my $i = 0; $i <= $#tab_req2 and $tab_req2[$i] <= $AP; $i++)
+              { $nb_doc2 = $i+1; }
+            
+            my $Rprec1 = 100*$nb_doc1/$AP;
+            my $Rprec2 = 100*$nb_doc2/$AP;
+
+            push(@tab_ec1,$Rprec1);
+            push(@tab_ec2,$Rprec2);
+
+          }
+      }
+    
+    my ($moy1,$ec1) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec1);
+    my ($moy2,$ec2) = Moyenne_EcartType($nb_req_with_qrel,@tab_ec2);
+    
+    if ($moy1 == 0 and $moy2 == 0)
+      { $perc = 0 }
+    elsif ($moy1 == 0)
+      { $perc = "+inf" }
+    else { $perc = 100 * ($moy2-$moy1) / $moy1 }
+    
+    print "\nRprec moyen (ec) : ",sprintf("%.2f",$moy1)," ($ec1)\t",sprintf("%.2f",$moy2)," ($ec2)\t",($perc eq "+inf")?$perc:sprintf("%.2f",$perc)," %\n";
+    
+    if (not $bool_no_comp and $bool_stat) { Tests_statistiques(\@tab_ec1,\@tab_ec2) }
+    
+  }
+
+print STDERR "\n MAP % change = $NIAP   avg(AP % change) = ",$microMAP_improv,"    \n\n";
+
+
+
+
+
+
+
+###################################################################################
+###################################################################################
+#########                            PROCEDURES                        ############
+###################################################################################
+###################################################################################
+
+
+sub Min {
+    my $min = shift;
+    for (@_)
+    { if ($_<$min) {$min = $_} }
+    return $min
+}
+
+
+sub Moyenne_EcartType {
+  my $nb_elem = shift; # peut etre different du nb d'elem 
+                       # effectivement dans le tableau
+  my $moy = 0; my $ec = 0;
+
+  foreach my $elem (@_)
+    { $moy += $elem }
+  $moy = $moy / $nb_elem;
+
+  for my $elem (@_)
+    { $ec += ($elem - $moy)**2 }
+  $ec = sprintf("%.2f",sqrt($ec/$nb_elem));
+
+  return ($moy,$ec);
+}
+
+
+
+sub Tests_statistiques {
+  # prepare l'appel a R, fait l'appel, recupere et affiche les resultats
+  my ($pt_sample1,$pt_sample2) = @_;
+
+  
+  my $bool_identical = 1;
+  for(my $i = 0; $i < scalar(@$pt_sample1); $i++)
+    { $bool_identical = ($bool_identical and $$pt_sample1[$i] == $$pt_sample2[$i]) }
+
+  if (not $bool_identical)
+    {
+      open(RFILE,"> $prefix.inputR") or die "$prg unable to write $prefix.inputR $!\n";
+      print RFILE "S1 <- c(", join(', ',@$pt_sample1),")\n";
+      print RFILE "S2 <- c(", join(', ',@$pt_sample2),")\n";
+      print RFILE "t.test(S1, S2, paired = TRUE)\n";
+      print RFILE "wilcox.test(S1, S2, paired=TRUE,alternative = \"two.sided\",conf.int = TRUE)\n";
+      close RFILE;
+      
+      system("R --no-save < $prefix.inputR > $prefix.outputR 2> /dev/null");
+      
+      open(ROUT,"$prefix.outputR") or die "$prg unable to read $prefix.outputR $!\n";
+      my $p_value_t_test = "not_computed"; my $p_value_wilcoxon = "not_computed"; 
+      my $test;
+      while(<ROUT>)
+        {
+          if (/^\tPaired t-test/)
+            { $test = "t-test" }
+          elsif (/^\tWilcoxon signed rank test/)
+            { $test = "wilcoxon" }
+          elsif (/p\-value = ([0-9\.e\-]+)/ )
+            { 
+              my $value = $1;
+              if ($test eq "t-test")
+                { $p_value_t_test = $value }
+              elsif ($test eq "wilcoxon")
+                { $p_value_wilcoxon = $value }
+            }
+        }
+      close ROUT;
+      
+      if (not $p_value_t_test eq "not_computed" and $p_value_t_test < 0.1)
+        { print "T-test : differences pas dues au hasard (p-value = $p_value_t_test)\n" }
+      if (not $p_value_wilcoxon eq "not_computed" and $p_value_wilcoxon < 0.1)
+        { print "Wilcoxon : differences pas dues au hasard (p-value = $p_value_wilcoxon)\n" }
+    
+      #unlink "$prefix.inputR" or print STDERR "$prg unable to rm $prefix.inputR $!\n";
+    }
+
+}
