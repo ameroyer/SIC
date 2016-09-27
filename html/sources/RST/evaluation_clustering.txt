@@ -1,7 +1,0 @@
-evaluation_clustering module
-============================
-
-.. automodule:: evaluation_clustering
-    :members:
-    :undoc-members:
-    :show-inheritance:
