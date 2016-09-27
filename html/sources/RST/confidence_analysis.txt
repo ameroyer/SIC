@@ -1,0 +1,7 @@
+confidence_analysis module
+==========================
+
+.. automodule:: confidence_analysis
+    :members:
+    :undoc-members:
+    :show-inheritance:
