@@ -1,0 +1,26 @@
+Source code Documentation
+=========================
+
+.. toctree::
+   :maxdepth: 3
+
+   Main script <RST/main>
+   Similarity analysis <RST/similarity_analysis>
+   Convergence analysis <RST/convergence_analysis>
+   Confidence analysis <RST/confidence_analysis>
+   Clustering Evaluation <RST/evaluation_clustering>
+   Neighbour retrieval Evaluation <RST/evaluation_retrieval>
+   SIC variants <run>
+   Functions <RST/utils>
+   
+
+.. include:: ../README
+  
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

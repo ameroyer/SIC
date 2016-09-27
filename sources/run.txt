@@ -1,0 +1,26 @@
+SIC variants
+============
+
+:mod:`run_basic` Module
+------------------------
+
+.. automodule:: run_basic
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`run_wem` Module
+----------------------
+
+.. automodule:: run_wem
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`run_ova` Module
+-------------------------
+
+.. automodule:: run_ova
+    :members:
+    :undoc-members:
+    :show-inheritance:

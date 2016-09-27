@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utils.annotation_scripts package &mdash; SIC: Similarity by Iterative Classification 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <link rel="top" title="SIC: Similarity by Iterative Classification 1.0 documentation" href="../index.html" />
+    <link rel="up" title="utils package" href="utils.html" />
+    <link rel="next" title="utils.classification_scripts package" href="utils.classification_scripts.html" />
+    <link rel="prev" title="utils package" href="utils.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.classification_scripts.html" title="utils.classification_scripts package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="utils package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">SIC: Similarity by Iterative Classification 1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="utils.html" accesskey="U">utils package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="utils-annotation-scripts-package">
+<h1>utils.annotation_scripts package<a class="headerlink" href="#utils-annotation-scripts-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utils.annotation_scripts.annotation_CRF">
+<span id="utils-annotation-scripts-annotation-crf-module"></span><h2>utils.annotation_scripts.annotation_CRF module<a class="headerlink" href="#module-utils.annotation_scripts.annotation_CRF" title="Permalink to this headline">¶</a></h2>
+<p><strong>annotation_CRF.py.</strong> Generation of synthetic annotations for wapiti CRF classifier.</p>
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_CRF.annotate_CRF_test">
+<code class="descclassname">utils.annotation_scripts.annotation_CRF.</code><code class="descname">annotate_CRF_test</code><span class="sig-paren">(</span><em>n</em>, <em>test</em>, <em>temp_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_CRF.annotate_CRF_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a wapiti-formatted version of the test entities for the CRF classifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step identifier.</li>
+<li><code class="docutils literal"><span class="pre">test</span></code> (<em>list</em>): test entities.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code>: directory for temporary files.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_sentences_test</span></code> (<em>int</em>): number of sequences in the training database.</li>
+<li><code class="docutils literal"><span class="pre">test_entities_indices</span></code> (<em>list</em>): indices and identifiers of the entities of interest in the test database.</li>
+<li><code class="docutils literal"><span class="pre">test_file</span></code> (<em>str</em>): path to the  formatted test data.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_CRF.annotate_CRF_train">
+<code class="descclassname">utils.annotation_scripts.annotation_CRF.</code><code class="descname">annotate_CRF_train</code><span class="sig-paren">(</span><em>n</em>, <em>train</em>, <em>distrib</em>, <em>n_labels</em>, <em>to_annotate</em>, <em>temp_folder</em>, <em>preclustering</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_CRF.annotate_CRF_train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a synthetic annotation of the data for the (wapiti) CRF classifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): iteration identifier.</li>
+<li><code class="docutils literal"><span class="pre">train</span></code> (<em>list</em>): training entities.</li>
+<li><code class="docutils literal"><span class="pre">distrib</span></code> (<em>str</em>): type of the synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">n_min</span></code> (<em>int</em>): minimum number of synthetic labels to use.</li>
+<li><code class="docutils literal"><span class="pre">n_max</span></code> (<em>int</em>): maximum number of synthetic labels to use.</li>
+<li><code class="docutils literal"><span class="pre">to_annotate</span></code> (<em>list</em>): in case of UNI annotation, list of indices of the entities to have their own class.</li>
+<li><code class="docutils literal"><span class="pre">with_common_label_wordform</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code>, each entity occurence wordform receives the same label. Defaults to <code class="docutils literal"><span class="pre">False</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code>: path to the directory for temporary files.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_unique_labels_used</span></code> (<em>int</em>): number of synthetic labels that were actually used.</li>
+<li><code class="docutils literal"><span class="pre">n_sentences_train</span></code> (<em>int</em>): number of sequences in the training database.</li>
+<li><code class="docutils literal"><span class="pre">n_entities_train</span></code> (<em>int</em>): number of entities in the training database.</li>
+<li><code class="docutils literal"><span class="pre">train_file</span></code> (<em>str</em>): path to the  formatted train data.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils.annotation_scripts.annotation_DT">
+<span id="utils-annotation-scripts-annotation-dt-module"></span><h2>utils.annotation_scripts.annotation_DT module<a class="headerlink" href="#module-utils.annotation_scripts.annotation_DT" title="Permalink to this headline">¶</a></h2>
+<p><strong>annotation_DT.py.</strong> Generation of synthetic annotations for weka Decision Tree J48 classifiers.</p>
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_DT.annotate_DT_test">
+<code class="descclassname">utils.annotation_scripts.annotation_DT.</code><code class="descname">annotate_DT_test</code><span class="sig-paren">(</span><em>n</em>, <em>test</em>, <em>features</em>, <em>fake_class</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_DT.annotate_DT_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a weka-formatted version of the test entities for the DT classifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step identifier.</li>
+<li><code class="docutils literal"><span class="pre">test</span></code> (<em>list</em>): test entities.</li>
+<li><code class="docutils literal"><span class="pre">features</span></code> (<em>list</em>): pattern for the feature selection.</li>
+<li><code class="docutils literal"><span class="pre">fake_class</span></code>: fake weka class to give to all test entities for the weka format.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_sentences_test</span></code> (<em>int</em>): number of sequences in the training database.</li>
+<li><code class="docutils literal"><span class="pre">test_entities</span></code> (<em>list</em>): indices and identifiers of the entities of interest in the test database.</li>
+<li><code class="docutils literal"><span class="pre">test_file</span></code> (<em>str</em>): path to the  formatted test data.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_DT.annotate_DT_train">
+<code class="descclassname">utils.annotation_scripts.annotation_DT.</code><code class="descname">annotate_DT_train</code><span class="sig-paren">(</span><em>n</em>, <em>train</em>, <em>distrib</em>, <em>n_labels</em>, <em>features</em>, <em>to_annotate</em>, <em>temp_folder</em>, <em>preclustering</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_DT.annotate_DT_train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a synthetic annotation of the data (train + test) for the (weka) DT classifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step identifier.</li>
+<li><code class="docutils literal"><span class="pre">train</span></code> (<em>list</em>): training entities.</li>
+<li><code class="docutils literal"><span class="pre">distrib</span></code> (<em>str</em>): type of the synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">n_min</span></code> (<em>int</em>): minimum number of synthetic labels to use.</li>
+<li><code class="docutils literal"><span class="pre">n_max</span></code> (<em>int</em>): maximum number of synthetic labels to use.</li>
+<li><code class="docutils literal"><span class="pre">features</span></code> (<em>list</em>): pattern for the feature selection.</li>
+<li><code class="docutils literal"><span class="pre">to_annotate</span></code> (<em>list</em>): in case of UNI annotation, list of indices of the entities to have their own class.</li>
+<li><code class="docutils literal"><span class="pre">with_common_label_wordform</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code>, each entity occurence wordform receives the same label. Defaults to False.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code>: directory for temporary files.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): random max number of synthetic labels for this step.</li>
+<li><code class="docutils literal"><span class="pre">n_unique_labels_used</span></code> (<em>int</em>): number of synthetic labels that were actually used.</li>
+<li><code class="docutils literal"><span class="pre">n_sentences_train</span></code> (<em>int</em>): number of sequences in the training database.</li>
+<li><code class="docutils literal"><span class="pre">n_entities_train</span></code> (<em>int</em>): number of entities in the training database.</li>
+<li><code class="docutils literal"><span class="pre">train_file</span></code> (<em>str</em>): path to the  formatted train data.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_DT.weka_compatible_string">
+<code class="descclassname">utils.annotation_scripts.annotation_DT.</code><code class="descname">weka_compatible_string</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_DT.weka_compatible_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_DT.weka_format">
+<code class="descclassname">utils.annotation_scripts.annotation_DT.</code><code class="descname">weka_format</code><span class="sig-paren">(</span><em>n</em>, <em>wekadata</em>, <em>train_length</em>, <em>test_length</em>, <em>temp_folder</em>, <em>verbose</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_DT.weka_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats the inout weka file to be compatible with J48 tree and splits it as a train and test file</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): iteration identifier.</li>
+<li><code class="docutils literal"><span class="pre">wekadata</span></code> (<em>str</em>): input weka file.</li>
+<li><code class="docutils literal"><span class="pre">train_length</span></code> (<em>int</em>): number of attributes in train.</li>
+<li><code class="docutils literal"><span class="pre">test_length</span></code> (<em>int</em>): number of attributes in test.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int</em>): verbosity level.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils.annotation_scripts.annotation_HTK">
+<span id="utils-annotation-scripts-annotation-htk-module"></span><h2>utils.annotation_scripts.annotation_HTK module<a class="headerlink" href="#module-utils.annotation_scripts.annotation_HTK" title="Permalink to this headline">¶</a></h2>
+<p><strong>annotation_HTK.py.</strong> Generation of synthetic annotations for HTK HMM classifiers.</p>
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_HTK.annotate_HTK_test">
+<code class="descclassname">utils.annotation_scripts.annotation_HTK.</code><code class="descname">annotate_HTK_test</code><span class="sig-paren">(</span><em>n</em>, <em>test</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_HTK.annotate_HTK_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a HTK-formatted version of the test entities for the HTK classifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step identifier.</li>
+<li><code class="docutils literal"><span class="pre">test</span></code> (<em>list</em>): test entities.</li>
+<li><code class="docutils literal"><span class="pre">features</span></code> (<em>list</em>): pattern for the feature selection.</li>
+<li><code class="docutils literal"><span class="pre">fake_class</span></code>: fake weka class to give to all test entities for the weka format.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_sentences_test</span></code> (<em>int</em>): number of sequences in the training database.</li>
+<li><code class="docutils literal"><span class="pre">test_entities</span></code> (<em>list</em>): indices and identifiers of the entities of interest in the test database.</li>
+<li><code class="docutils literal"><span class="pre">test_file</span></code> (<em>str</em>): path to the  formatted test data.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation_scripts.annotation_HTK.annotate_HTK_train">
+<code class="descclassname">utils.annotation_scripts.annotation_HTK.</code><code class="descname">annotate_HTK_train</code><span class="sig-paren">(</span><em>n</em>, <em>train</em>, <em>distrib</em>, <em>n_labels</em>, <em>temp_folder</em>, <em>preclustering</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation_scripts.annotation_HTK.annotate_HTK_train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a synthetic annotation of the data (train + test) for the (HTK) HMM classifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step identifier.</li>
+<li><code class="docutils literal"><span class="pre">train</span></code> (<em>list</em>): training entities.</li>
+<li><code class="docutils literal"><span class="pre">distrib</span></code> (<em>str</em>): type of the synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">n_labels</span></code> (<em>int</em>): random max number of synthetic labels for this step.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_unique_labels_used</span></code> (<em>int</em>): number of synthetic labels that were actually used.</li>
+<li><code class="docutils literal"><span class="pre">n_entities_train</span></code> (<em>int</em>): number of entities in the training database.</li>
+<li><code class="docutils literal"><span class="pre">train_file</span></code> (<em>str</em>): path to the  formatted train data.</li>
+<li><code class="docutils literal"><span class="pre">mlf</span></code> (<em>str</em>): HTK master label file.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils.annotation_scripts">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utils.annotation_scripts" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">utils.annotation_scripts package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-utils.annotation_scripts.annotation_CRF">utils.annotation_scripts.annotation_CRF module</a></li>
+<li><a class="reference internal" href="#module-utils.annotation_scripts.annotation_DT">utils.annotation_scripts.annotation_DT module</a></li>
+<li><a class="reference internal" href="#module-utils.annotation_scripts.annotation_HTK">utils.annotation_scripts.annotation_HTK module</a></li>
+<li><a class="reference internal" href="#module-utils.annotation_scripts">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="previous chapter">utils package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.classification_scripts.html"
+                        title="next chapter">utils.classification_scripts package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/RST/utils.annotation_scripts.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.classification_scripts.html" title="utils.classification_scripts package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="utils package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">SIC: Similarity by Iterative Classification 1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="utils.html" >utils package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Amelie Royer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

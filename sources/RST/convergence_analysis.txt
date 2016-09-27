@@ -1,0 +1,7 @@
+convergence_analysis module
+===========================
+
+.. automodule:: convergence_analysis
+    :members:
+    :undoc-members:
+    :show-inheritance:

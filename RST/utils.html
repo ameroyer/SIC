@@ -1,0 +1,864 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utils package &mdash; SIC: Similarity by Iterative Classification 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <link rel="top" title="SIC: Similarity by Iterative Classification 1.0 documentation" href="../index.html" />
+    <link rel="next" title="utils.annotation_scripts package" href="utils.annotation_scripts.html" />
+    <link rel="prev" title="SIC variants" href="../run.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.annotation_scripts.html" title="utils.annotation_scripts package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../run.html" title="SIC variants"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">SIC: Similarity by Iterative Classification 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="utils-package">
+<h1>utils package<a class="headerlink" href="#utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utils.annotation_scripts.html">utils.annotation_scripts package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.annotation_scripts.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.annotation_scripts.html#module-utils.annotation_scripts.annotation_CRF">utils.annotation_scripts.annotation_CRF module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.annotation_scripts.html#module-utils.annotation_scripts.annotation_DT">utils.annotation_scripts.annotation_DT module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.annotation_scripts.html#module-utils.annotation_scripts.annotation_HTK">utils.annotation_scripts.annotation_HTK module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.annotation_scripts.html#module-utils.annotation_scripts">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.classification_scripts.html">utils.classification_scripts package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.classification_scripts.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.classification_scripts.html#module-utils.classification_scripts.basic_hmm">utils.classification_scripts.basic_hmm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.classification_scripts.html#module-utils.classification_scripts.classification_CRF">utils.classification_scripts.classification_CRF module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.classification_scripts.html#module-utils.classification_scripts.classification_DT">utils.classification_scripts.classification_DT module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.classification_scripts.html#module-utils.classification_scripts.classification_HTK">utils.classification_scripts.classification_HTK module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.classification_scripts.html#module-utils.classification_scripts">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utils.annotation">
+<span id="utils-annotation-module"></span><h2>utils.annotation module<a class="headerlink" href="#module-utils.annotation" title="Permalink to this headline">¶</a></h2>
+<p><strong>annotation.py.</strong> Generation of synthetic annotations for the data samples.</p>
+<dl class="function">
+<dt id="utils.annotation.annotate">
+<code class="descclassname">utils.annotation.</code><code class="descname">annotate</code><span class="sig-paren">(</span><em>n</em>, <em>temp_folder</em>, <em>classifier_type</em>, <em>(train</em>, <em>test)</em>, <em>annotation_params</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation.annotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a synthetic annotation of both the training and the testing set.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step identifier</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code>: directory for temporary files</li>
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of the classifier that will take the annotation as input.</li>
+<li><code class="docutils literal"><span class="pre">train</span></code> (<em>list</em>): initial train data structure.</li>
+<li><code class="docutils literal"><span class="pre">test</span></code> (<em>list</em>): initial test data structure.</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>dict</em>): additional annotation parameters.</li>
+<li><code class="docutils literal"><span class="pre">with_common_label_wordform</span> <span class="pre">``</span> <span class="pre">(*bool,</span> <span class="pre">optional*):</span> <span class="pre">if</span> <span class="pre">``True</span></code>, each entity occurence wordform receives the same label. Defaults to False.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int, optional</em>): controls verbosity level.</li>
+<li><code class="docutils literal"><span class="pre">debug</span></code> (<em>bool, optional</em>): enable/disable debug mode.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): random max number of synthetic labels for this step.</li>
+<li><code class="docutils literal"><span class="pre">n_unique_labels_used</span></code> (<em>int</em>): number of synthetic labels that were actually used.</li>
+<li><code class="docutils literal"><span class="pre">train_file</span></code> (<em>str</em>): path to the  formatted train data.</li>
+<li><code class="docutils literal"><span class="pre">test_file</span></code> (<em>str</em>): path to the  formatted test data.</li>
+<li><code class="docutils literal"><span class="pre">training_size</span></code> (<em>int</em>): number of sequences in the training database.</li>
+<li><code class="docutils literal"><span class="pre">testing_size</span></code> (<em>int</em>): number of sequences in the testing database.</li>
+<li><code class="docutils literal"><span class="pre">n_entities_train</span></code> (<em>int</em>): number of entities in the training database.</li>
+<li><code class="docutils literal"><span class="pre">entites_indices</span></code> (<em>list</em>): indentify the entities of interest (tag B) in the testing set; this will be used to filter the classifier&#8217;s output.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation.choose_features">
+<code class="descclassname">utils.annotation.</code><code class="descname">choose_features</code><span class="sig-paren">(</span><em>pattern</em>, <em>distrib</em>, <em>output_pattern_file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.annotation.choose_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of features and their probability of occurrence (pattern), choose features at random for the current training step.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">pattern</span></code> (<em>list</em>): features organized by importance category.</li>
+<li><code class="docutils literal"><span class="pre">distrib</span></code> (<em>list</em>): probability of sampling a feature for each category.</li>
+<li><code class="docutils literal"><span class="pre">output_pattern_file</span></code> (<em>str</em>): testing set.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">to_keep</span></code> (<em>list</em>): the selected features.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.annotation.random">
+<code class="descclassname">utils.annotation.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; x in the interval [0, 1).<a class="headerlink" href="#utils.annotation.random" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="utils-classify-module">
+<h2>utils.classify module<a class="headerlink" href="#utils-classify-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="utils-em-analysis-module">
+<h2>utils.em_analysis module<a class="headerlink" href="#utils-em-analysis-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utils.error">
+<span id="utils-error-module"></span><h2>utils.error module<a class="headerlink" href="#module-utils.error" title="Permalink to this headline">¶</a></h2>
+<p><strong>error.py.</strong> error module</p>
+<dl class="exception">
+<dt id="utils.error.ConfigError">
+<em class="property">exception </em><code class="descclassname">utils.error.</code><code class="descname">ConfigError</code><a class="headerlink" href="#utils.error.ConfigError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<p>Exception raised  when a compatibility error is found in the configuration options.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="utils.error.InputError">
+<em class="property">exception </em><code class="descclassname">utils.error.</code><code class="descname">InputError</code><a class="headerlink" href="#utils.error.InputError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<p>Exception raised  when an error is found in the input data.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="utils.error.ParsingError">
+<em class="property">exception </em><code class="descclassname">utils.error.</code><code class="descname">ParsingError</code><a class="headerlink" href="#utils.error.ParsingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<p>Exception raised  when a parsing error is found the configuration options.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.error.signal_handler">
+<code class="descclassname">utils.error.</code><code class="descname">signal_handler</code><span class="sig-paren">(</span><em>signal</em>, <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.error.signal_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the Keyboard interrupt signal in case of multi-process execution.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.error.warning">
+<code class="descclassname">utils.error.</code><code class="descname">warning</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.error.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a warning on the error stream.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code> (<em>str</em>): warning message</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils.eval">
+<span id="utils-eval-module"></span><h2>utils.eval module<a class="headerlink" href="#module-utils.eval" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="utils.eval.APP">
+<code class="descclassname">utils.eval.</code><code class="descname">APP</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.APP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.F">
+<code class="descclassname">utils.eval.</code><code class="descname">F</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.F" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.P">
+<code class="descclassname">utils.eval.</code><code class="descname">P</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.P" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.R">
+<code class="descclassname">utils.eval.</code><code class="descname">R</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.R" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.Read_file">
+<code class="descclassname">utils.eval.</code><code class="descname">Read_file</code><span class="sig-paren">(</span><em>file_cl</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.Read_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.V">
+<code class="descclassname">utils.eval.</code><code class="descname">V</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.combination">
+<code class="descclassname">utils.eval.</code><code class="descname">combination</code><span class="sig-paren">(</span><em>a</em>, <em>k</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.combination" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.grp2idx">
+<code class="descclassname">utils.eval.</code><code class="descname">grp2idx</code><span class="sig-paren">(</span><em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.grp2idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.mi">
+<code class="descclassname">utils.eval.</code><code class="descname">mi</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.mi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.mutual_info">
+<code class="descclassname">utils.eval.</code><code class="descname">mutual_info</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.mutual_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.nmi">
+<code class="descclassname">utils.eval.</code><code class="descname">nmi</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.nmi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utils.eval.rand">
+<code class="descclassname">utils.eval.</code><code class="descname">rand</code><span class="sig-paren">(</span><em>predicted</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.eval.rand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="utils-matrix-op-module">
+<h2>utils.matrix_op module<a class="headerlink" href="#utils-matrix-op-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="utils-one-step-module">
+<h2>utils.one_step module<a class="headerlink" href="#utils-one-step-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="utils-opt-module">
+<h2>utils.opt module<a class="headerlink" href="#utils-opt-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utils.output_format">
+<span id="utils-output-format-module"></span><h2>utils.output_format module<a class="headerlink" href="#module-utils.output_format" title="Permalink to this headline">¶</a></h2>
+<p><strong>output_format.py.</strong> functions linked to format of the program outputs.</p>
+<dl class="class">
+<dt id="utils.output_format.Tee">
+<em class="property">class </em><code class="descclassname">utils.output_format.</code><code class="descname">Tee</code><span class="sig-paren">(</span><em>*files</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.Tee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Tee object used for linking several files (used for linking stdout to log file).</p>
+<dl class="method">
+<dt id="utils.output_format.Tee.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.Tee.flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.output_format.Tee.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.Tee.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.clustering_to_file">
+<code class="descclassname">utils.output_format.</code><code class="descname">clustering_to_file</code><span class="sig-paren">(</span><em>output_folder</em>, <em>clustering</em>, <em>suffix=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.clustering_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a clustering in a file.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): Path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>dict</em>): clustering represented as a dictionnary mapping a cluster to its elements.</li>
+<li><code class="docutils literal"><span class="pre">suffix</span></code> (<em>str, optional</em>): if given, this is added as a suffix to the name of the output file. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_path</span></code> (<em>str</em>): Path to the file in which the clustering was written.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.clustering_to_string">
+<code class="descclassname">utils.output_format.</code><code class="descname">clustering_to_string</code><span class="sig-paren">(</span><em>clustering</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.clustering_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Return a clustering as a string with entities separated by tabulations and clusters by newlines &#8216;</div></blockquote>
+<p>&#8216;.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>dict</em>): clustering represented as a dictionnary mapping a cluster to its elements.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">clustering_to_string</span></code> (<em>str</em>): string representation of the clustering.</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.init_folder">
+<code class="descclassname">utils.output_format.</code><code class="descname">init_folder</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.init_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create directory in <code class="docutils literal"><span class="pre">path</span></code> if not already existing.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">path</span></code> (<em>str</em>): path of the directory to initialize.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.load_cooc">
+<code class="descclassname">utils.output_format.</code><code class="descname">load_cooc</code><span class="sig-paren">(</span><em>mat</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.load_cooc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and format, if needed, the given similarity matrix.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">mat</span></code> (<em>str</em>): path to the similarity matrix (txt, npy or pickle)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.log">
+<code class="descclassname">utils.output_format.</code><code class="descname">log</code><span class="sig-paren">(</span><em>output_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create file for redirecting output</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to root of directory for outputs.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.readable_clustering">
+<code class="descclassname">utils.output_format.</code><code class="descname">readable_clustering</code><span class="sig-paren">(</span><em>output_folder</em>, <em>clustering</em>, <em>index_to_label</em>, <em>suffix=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.readable_clustering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs a clustering in a more readable format.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): Path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>dict</em>): clustering represented as a dictionnary mapping a cluster to the lsit of its elements.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): mapping from an entity index to a string label.</li>
+<li><code class="docutils literal"><span class="pre">suffix</span></code> (<em>str, optional</em>): if given, this is added as a suffix to the name of the output file. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the file now containing the clustering under readable format.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.save_coocc">
+<code class="descclassname">utils.output_format.</code><code class="descname">save_coocc</code><span class="sig-paren">(</span><em>output_folder</em>, <em>coocc</em>, <em>suffix=None</em>, <em>type='binary'</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.save_coocc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the current co-occurence matrix.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to root of output folder.</li>
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step of the matrix.</li>
+<li><code class="docutils literal"><span class="pre">coocc</span></code> (<em>ndarray</em>): co-occurence matrix.</li>
+<li><code class="docutils literal"><span class="pre">type</span></code> (<em>str</em>): output file format (<code class="docutils literal"><span class="pre">text</span></code>, <code class="docutils literal"><span class="pre">binary</span></code> or <code class="docutils literal"><span class="pre">pickle</span></code>).</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the file now containing the matrix.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.output_format.save_coocc_mcl">
+<code class="descclassname">utils.output_format.</code><code class="descname">save_coocc_mcl</code><span class="sig-paren">(</span><em>output_folder</em>, <em>coocc</em>, <em>index_to_label</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.output_format.save_coocc_mcl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save current co-occurence matrix (only non-zero entries) in the label format of MCL.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to root of output folder.</li>
+<li><code class="docutils literal"><span class="pre">coocc</span></code> (<em>ndarray</em>): co-occurence matrix.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): mapping from an entity index to a readable label.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the file now containing the matrix.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils.parse">
+<span id="utils-parse-module"></span><h2>utils.parse module<a class="headerlink" href="#module-utils.parse" title="Permalink to this headline">¶</a></h2>
+<p><strong>parse.py.</strong> Functions for parsing data files and ground-truth file for a given data set. The module can also be used as a script to generate <code class="docutils literal"><span class="pre">.qrel</span></code> version of the ground-truth for the information retrieval evaluation procedure.</p>
+<dl class="function">
+<dt id="utils.parse.ground_truth_AQUA_qrel">
+<code class="descclassname">utils.parse.</code><code class="descname">ground_truth_AQUA_qrel</code><span class="sig-paren">(</span><em>ground_truth_file</em>, <em>output_file</em>, <em>aqua_entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.ground_truth_AQUA_qrel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the qrel file for the AQUAINT ground-truth to be used for the nearest neighbour evaluation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to the AQUAINT ground-truth file.</li>
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the qrel output file.</li>
+<li><code class="docutils literal"><span class="pre">aqua_entities_file</span></code> (<em>str</em>): path to the file listing all AQUAINT entities.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.ground_truth_indices">
+<code class="descclassname">utils.parse.</code><code class="descname">ground_truth_indices</code><span class="sig-paren">(</span><em>data_type</em>, <em>ground_truth_file</em>, <em>label_to_index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.ground_truth_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indices of the entities that are in the ground truth. Only used for AQUAINT as for NER, samples = ground_truth</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): dataset identifier</li>
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to the ground_truth_file</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>list</em>): maps a label to the corresponding entity index. Required for Aquaint.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">indices</span></code> (<em>list</em>): indices of samples in ground-truth.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.ground_truth_pairs">
+<code class="descclassname">utils.parse.</code><code class="descname">ground_truth_pairs</code><span class="sig-paren">(</span><em>data_type</em>, <em>ground_truth_file</em>, <em>n_samples</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.ground_truth_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves indices of samples&#8217;pairs that have the same ground-truth class. Indices are computed as if using the upper triangle of a squqre n_samples x n_samples matrix.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): data set.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): ground-truth file for the given data set.</li>
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>str</em>): number of samples for the given data set.</li>
+</ul>
+</dd>
+<dt>Return:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">indices</span></code> (<em>int ist</em>): list of indices of samples pairs with same ground-truth class.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.ground_truth_qrel">
+<code class="descclassname">utils.parse.</code><code class="descname">ground_truth_qrel</code><span class="sig-paren">(</span><em>ground_truth_file</em>, <em>output_file</em>, <em>index_to_label</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.ground_truth_qrel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the qrel file for NER and AUDIO ground-truth to be used for the nearest neighbour evaluation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to the AQUAINT ground-truth file.</li>
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the qrel output file.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (list*): maps an entity index to the corresponding string label.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_AQUA_entities">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_AQUA_entities</code><span class="sig-paren">(</span><em>entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_AQUA_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the file containing all entities of the AQUAINT2 dataset to build the index_to_label and label_to_index mappings.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">entities_file</span></code> (<em>str</em>): file containing the retrieved entities and number of occurences.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list assocating a sample&#8217;s index with its string representation.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>list</em>): reversed mapping of index_to_label.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_AQUA_single_partial">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_AQUA_single_partial</code><span class="sig-paren">(</span><em>classifier_type</em>, <em>data_file</em>, <em>label_to_index</em>, <em>training_size</em>, <em>testing_size</em>, <em>train_acc</em>, <em>test_acc</em>, <em>test_occurences</em>, <em>train_included_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_AQUA_single_partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse partially the given Aquaint2 data file. Contrary to <code class="docutils literal"><span class="pre">parse_AQUA_single</span></code>, this function does not load the whole data, but directly builds the required training and testing sets.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of the classifier that will be used for the experiment.</li>
+<li><code class="docutils literal"><span class="pre">data_file</span></code> (<em>str</em>): path tothe data file.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>str</em>): maps a word to an integer index (alphabetical order). Used to maps multiple occurences of a same word to the same index.</li>
+<li><code class="docutils literal"><span class="pre">training_size</span></code> (<em>int</em>): number of docs for training from this document, or a list of docs indices + sentences to keep.</li>
+<li><code class="docutils literal"><span class="pre">testing_size</span></code> (<em>int</em>): number of docs for testing from this document, or a list of docs indices + sentences to keep.</li>
+<li><code class="docutils literal"><span class="pre">train_acc</span></code> (<em>iterator</em>): accumulator for training sentences.</li>
+<li><code class="docutils literal"><span class="pre">test_acc</span></code> (<em>iterator</em>): accumulator for testing sentences.</li>
+<li><code class="docutils literal"><span class="pre">test_indices</span></code> (<em>array</em>): accumulator for the number of occurrences of each word in the test database.</li>
+<li><code class="docutils literal"><span class="pre">train_included_test</span></code> (<em>bool, optional</em>): If <code class="docutils literal"><span class="pre">True</span></code>, retrieved training sentences will also be included in the testing set.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">train_acc</span></code> (<em>iterator</em>): updated training sentences accumulator.</li>
+<li><code class="docutils literal"><span class="pre">test_acc</span></code> (<em>iterator</em>): updated testing sentences accumulator.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_NER">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_NER</code><span class="sig-paren">(</span><em>classifier_type</em>, <em>data_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_NER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads and parses the given data file for the Named Entity Recognition (NER) task.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of the classifier that will be used for the experiments.</li>
+<li><code class="docutils literal"><span class="pre">data_file</span></code> (<em>str</em>): path to data file.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples in the database.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): structure containing the data. A word is usually represented by a tuple (index of the sample if interesting entity, word representant of the sample, additional tags, B(I)O tag).</li>
+<li><code class="docutils literal"><span class="pre">data_occurrences</span></code> (<em>list</em>): number of occurences of each word in each sentence.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list assocating a sample&#8217;s index with its string representation.</li>
+<li><code class="docutils literal"><span class="pre">summary</span></code> (<em>str</em>): additional information on the dataset.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_audio">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_audio</code><span class="sig-paren">(</span><em>data_folder</em>, <em>selected_features</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse features selection for the Audio task.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data_folder</span></code> (<em>str</em>): If the features are precomputed, then <code class="docutils literal"><span class="pre">data_folder</span></code> is the path to the directory containing the features. Otherwise, it is a file containing the samples folder as its first line and all the possible HTK features markers (one per line) to consider.</li>
+<li><code class="docutils literal"><span class="pre">selected_features</span></code> (<em>list</em>): list of the features type to use in the experiments (given in the configuration file).</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples in the dataset.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): maps a feature identifier to the corresponding HTK generated features.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>lsit</em>): maps an entity index to a string label.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_data">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_data</code><span class="sig-paren">(</span><em>data_type</em>, <em>classification_params</em>, <em>data_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse data file(s) depending on the chosen options.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): dataset identifier.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>str</em>): classifier parameters.</li>
+<li><code class="docutils literal"><span class="pre">data_file</span></code> (<em>str</em>): path to data file.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples in the database.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): structure containing the data.</li>
+<li><code class="docutils literal"><span class="pre">data_occurrences</span></code> (<em>list</em>): number of entity occurrences in each sentence/docs of the data (only for AQUAINT and NER).</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list associating a sample&#8217;s index with its string representation.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>list</em>): reversed mapping of index_to_label.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_ground_truth">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_ground_truth</code><span class="sig-paren">(</span><em>data_type</em>, <em>ground_truth_file</em>, <em>label_to_index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_ground_truth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads and parses the given ground-truth file.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): structure containing the data.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to the ground truth file.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>dict, optional</em>): maps an AQUAINT word to its index. Required when outputting  the AQUAINT groundtruth with the entity indices rather than string representation.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>list</em>): list associating a sample with its ground-truth cluster:<ul>
+<li>for NER, <code class="docutils literal"><span class="pre">ground_truth</span></code>: cluster (<em>str</em>) -&gt; entity indices (<em>int list</em>)</li>
+<li>for AQUA, <code class="docutils literal"><span class="pre">ground_truth</span></code>: entity (<em>str</em>) -&gt; entity indices (<em>int list</em>) if label_to_index, else str list</li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.parse_pattern">
+<code class="descclassname">utils.parse.</code><code class="descname">parse_pattern</code><span class="sig-paren">(</span><em>classifier_type</em>, <em>pattern_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.parse_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads and parses the given pattern file (Wapiti/CRF++ expected format).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of the classifier that will be used for the experiment.</li>
+<li><code class="docutils literal"><span class="pre">pattern_file</span></code> (<em>str</em>): path to the pattern file.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">features</span></code> (<em>list</em>): features organized by category.</li>
+<li><code class="docutils literal"><span class="pre">distrib</span></code> (<em>list</em>): probability of sampling a feature for each category.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse.split_on_ground_truth_no_indices">
+<code class="descclassname">utils.parse.</code><code class="descname">split_on_ground_truth_no_indices</code><span class="sig-paren">(</span><em>data_type</em>, <em>ground_truth_file</em>, <em>numb=6</em>, <em>keys=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse.split_on_ground_truth_no_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the ground_truth data file, returns a random set number of entities for each class (usually used to visualize similarity distributions)</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): structure containing the data.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to the ground truth file.</li>
+<li><code class="docutils literal"><span class="pre">numb</span></code> (<em>int</em>): number to plot for each entity</li>
+<li><code class="docutils literal"><span class="pre">keys</span></code> (<em>list, optional</em>): if given, the algorithm returns a list of samples whose ground-truth classes form the <code class="docutils literal"><span class="pre">keys</span></code> list.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>list</em>): list associating a sample with its ground-truth cluster.</li>
+<li><code class="docutils literal"><span class="pre">selected_entities</span></code> (<em>list</em>): selected entities to be plotted.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="utils-parse-stat-module">
+<h2>utils.parse_stat module<a class="headerlink" href="#utils-parse-stat-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="utils-plot-module">
+<h2>utils.plot module<a class="headerlink" href="#utils-plot-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="utils-probability-fit-module">
+<h2>utils.probability_fit module<a class="headerlink" href="#utils-probability-fit-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utils.read_config">
+<span id="utils-read-config-module"></span><h2>utils.read_config module<a class="headerlink" href="#module-utils.read_config" title="Permalink to this headline">¶</a></h2>
+<p><strong>read_config.py.</strong> Functions for setting the main parameters. Reads the configuration file in <code class="docutils literal"><span class="pre">configuration.ini</span></code> and the command line options.</p>
+<dl class="function">
+<dt id="utils.read_config.get_config_option">
+<code class="descclassname">utils.read_config.</code><code class="descname">get_config_option</code><span class="sig-paren">(</span><em>config</em>, <em>section</em>, <em>name</em>, <em>arg</em>, <em>type='str'</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.read_config.get_config_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default configuration if <code class="docutils literal"><span class="pre">arg</span></code> (command line argument) is <code class="docutils literal"><span class="pre">None</span></code>, else returns <code class="docutils literal"><span class="pre">arg</span></code>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">config</span></code>: current configuration object returned by ConfigParser.</li>
+<li><code class="docutils literal"><span class="pre">section</span></code> (<em>str</em>): section of the considered argument.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> (<em>str</em>): name of the considered argument.</li>
+<li><code class="docutils literal"><span class="pre">arg</span></code>: value passed through command line for the considered argument.</li>
+<li><code class="docutils literal"><span class="pre">type</span></code> (<em>str, optional</em>): type of the considered argument (str, int or float). Defaults to <em>str</em>.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.read_config.parse_cmd_line">
+<code class="descclassname">utils.read_config.</code><code class="descname">parse_cmd_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.read_config.parse_cmd_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line for options to override the default configuration parameters.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">opt</span></code> (<em>list</em>):  specified command line options to override the default config options:<ul>
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): number of iterations (-N, &#8211;iter).</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code> (<em>int</em>): number of cores (-t, &#8211;threads).</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): chosen dataset (-d, &#8211;dataset).</li>
+<li><code class="docutils literal"><span class="pre">input</span></code> (<em>str</em>): chosen data file (-in, &#8211;input).</li>
+<li><code class="docutils literal"><span class="pre">groundtruth</span></code> (<em>str</em>): chosen data file (-g, &#8211;groundtruth).</li>
+<li><code class="docutils literal"><span class="pre">n_distrib</span></code> (<em>str</em>): type of annotation (-di, &#8211;distrib).</li>
+<li><code class="docutils literal"><span class="pre">training_size</span></code> (<em>float</em>): training percentage, strictly between 0 and 1 (-ts, &#8211;trainsize).</li>
+<li><code class="docutils literal"><span class="pre">nmin</span></code> (<em>int</em>): minimum number of synthetic labels (-nmin).</li>
+<li><code class="docutils literal"><span class="pre">nmax</span></code> (<em>int</em>): minimum number of synthetic labels (-nmax).</li>
+</ul>
+</li>
+<li><code class="docutils literal"><span class="pre">cfg</span></code> (<em>str</em>): path to default configuration file.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int</em>): controls verbosity level (0 to 4).</li>
+<li><code class="docutils literal"><span class="pre">debug</span></code> (<em>bool</em>): runs in debugging mode.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.read_config.read_config_file">
+<code class="descclassname">utils.read_config.</code><code class="descname">read_config_file</code><span class="sig-paren">(</span><em>f</em>, <em>N=None</em>, <em>cores=None</em>, <em>data_type=None</em>, <em>input_file=None</em>, <em>ground_truth_file=None</em>, <em>n_distrib=None</em>, <em>training_size=None</em>, <em>nmin=None</em>, <em>nmax=None</em>, <em>classifier_type=None</em>, <em>similarity_type=None</em>, <em>task_type=None</em>, <em>cvg_step=None</em>, <em>cvg_criterion=None</em>, <em>output_folder=None</em>, <em>temp_folder=None</em>, <em>oar=False</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.read_config.read_config_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads and parses the default arguments in the configuration file.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">f</span></code> (<em>str</em>): path to the configuration file.</li>
+<li><code class="docutils literal"><span class="pre">opt</span></code> (<em>list</em>): specified command line options (see result of <code class="docutils literal"><span class="pre">read_config.parse_cmd_line</span></code>).</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): number of iterations.</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code> (<em>int</em>): number of cores to use.</li>
+<li><code class="docutils literal"><span class="pre">locks</span></code> (<em>int</em>): number of independant locks to add on the similarity matrix.</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): name of the dataset chosen for the experiments.</li>
+<li><code class="docutils literal"><span class="pre">input_file</span></code> (<em>str</em>): path to default input file.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to default configuration file.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the folder for temporary files (e.g. MCL input format file).</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the folder for output files.</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>dict</em>): parameters for the synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>dict</em>): parameters for the supervised classification algorithm. (classifier type, training percentage, similarity type, additional parameters).</li>
+<li><code class="docutils literal"><span class="pre">classifier_binary</span></code> (<em>str</em>): path to the binary for the classifier.</li>
+<li><code class="docutils literal"><span class="pre">task_params</span></code> (<em>list</em>): parameters for the post-processing task. (task type, algorithm binary, additional parameters).</li>
+<li><code class="docutils literal"><span class="pre">cvg_step</span></code> (<em>int</em>): If <code class="docutils literal"><span class="pre">step</span></code> &gt; 2, the convergence criterion will be evaluated every <code class="docutils literal"><span class="pre">step</span></code> iteration.</li>
+<li><code class="docutils literal"><span class="pre">cvg_criterion</span></code> (<em>float</em>): value of the criterion on the mean entropies to stop the algorithm.</li>
+<li><code class="docutils literal"><span class="pre">config</span></code> (<em>ConfigParser</em>): configuration object updated with the values in command line.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">utils package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-utils.annotation">utils.annotation module</a></li>
+<li><a class="reference internal" href="#utils-classify-module">utils.classify module</a></li>
+<li><a class="reference internal" href="#utils-em-analysis-module">utils.em_analysis module</a></li>
+<li><a class="reference internal" href="#module-utils.error">utils.error module</a></li>
+<li><a class="reference internal" href="#module-utils.eval">utils.eval module</a></li>
+<li><a class="reference internal" href="#utils-matrix-op-module">utils.matrix_op module</a></li>
+<li><a class="reference internal" href="#utils-one-step-module">utils.one_step module</a></li>
+<li><a class="reference internal" href="#utils-opt-module">utils.opt module</a></li>
+<li><a class="reference internal" href="#module-utils.output_format">utils.output_format module</a></li>
+<li><a class="reference internal" href="#module-utils.parse">utils.parse module</a></li>
+<li><a class="reference internal" href="#utils-parse-stat-module">utils.parse_stat module</a></li>
+<li><a class="reference internal" href="#utils-plot-module">utils.plot module</a></li>
+<li><a class="reference internal" href="#utils-probability-fit-module">utils.probability_fit module</a></li>
+<li><a class="reference internal" href="#module-utils.read_config">utils.read_config module</a></li>
+<li><a class="reference internal" href="#module-utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../run.html"
+                        title="previous chapter">SIC variants</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.annotation_scripts.html"
+                        title="next chapter">utils.annotation_scripts package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/RST/utils.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.annotation_scripts.html" title="utils.annotation_scripts package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../run.html" title="SIC variants"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">SIC: Similarity by Iterative Classification 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Amelie Royer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

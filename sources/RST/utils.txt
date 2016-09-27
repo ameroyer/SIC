@@ -1,0 +1,134 @@
+utils package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    utils.annotation_scripts
+    utils.classification_scripts
+
+Submodules
+----------
+
+utils.annotation module
+-----------------------
+
+.. automodule:: utils.annotation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.classify module
+---------------------
+
+.. automodule:: utils.classify
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.em_analysis module
+------------------------
+
+.. automodule:: utils.em_analysis
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.error module
+------------------
+
+.. automodule:: utils.error
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.eval module
+-----------------
+
+.. automodule:: utils.eval
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.matrix_op module
+----------------------
+
+.. automodule:: utils.matrix_op
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.one_step module
+---------------------
+
+.. automodule:: utils.one_step
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.opt module
+----------------
+
+.. automodule:: utils.opt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.output_format module
+--------------------------
+
+.. automodule:: utils.output_format
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.parse module
+------------------
+
+.. automodule:: utils.parse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.parse_stat module
+-----------------------
+
+.. automodule:: utils.parse_stat
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.plot module
+-----------------
+
+.. automodule:: utils.plot
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.probability_fit module
+----------------------------
+
+.. automodule:: utils.probability_fit
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+utils.read_config module
+------------------------
+
+.. automodule:: utils.read_config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
