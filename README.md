@@ -1,84 +1,83 @@
-README - SIC: Similarity by Iterative Classifications
-=====================================================
-.. contents::
-   :local:
+# [ S I C ]  r e a d   m e
 
 
-Documentation
--------------
+# Requirements
 
-**Generation** (Using Sphinx) ::
+#### Python dependencies
+ * Tested with Python 2.7
+ * Numpy
+ * Scipy
+ * Matplotlib
 
-	cd Doc/
-	make html
+#### External libraries
+ * [MCL](http://micans.org/mcl/), Markov clustering algorithm
+ * [Wapiti](http://wapiti.limsi.fr/), CRF implementation (text data)
+ * [HTK](http://htk.eng.cam.ac.uk/), HMM implementation (audio data)
 
-The documentation can then be found in ``Doc/_build/html/index.html``
+# Usage
 
-
-
-Main script
------------
-
-**Usage:** ::
+#### main script
 
 	python main.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -p [10] -cs [11] -cc [12] -o [13] -te [14] -in [15] -g [16] -cfg [17] -v [18] --debug --oar --help
 
 where:
  * Default options are found in the ``configuration.ini`` file.
- * [1] ``-i, --iter``: number of classification iterations.
- * [2] ``-t, --threads``: number of cores to use.
- * [3] ``-d, --dataset``: dataset to use.
- * [4] ``-c, --classifier``: classifier to use.
- * [5] ``-ts, --trainsize``: proportion of dataset to use for training.
- * [6] ``-s, --sim``: similarity type to use. Defaults to BIN.
- * [7] ``-nmin``: minimum number of synthetic labels.
- * [8] ``-nmax``: maximum number of synthetic labels.
- * [9] ``-di, --distrib``: synthetic annotation mode (RND, UNI, OVA). Defaults to RND.
- * [10] ``-p, --post``: post-processing task/algorithm (MCL or KNN, which requires a .qrel version of the ground-truth, see ``parse.py``).
- * [11] ``-cs, --cvg_step``: check convergence criterion every ``cs`` step.
- * [12] ``-cc, --cvg_criterion``: convergence criterion threshold. (Note that the current implementation of the convergence criterion with the concurrency of processes is far from perfect).
- * [13] ``-o, --output``: output folder.
- * [14] ``-te, --temp``: temporary folder.
- * [15] ``-in``: input data file.
- * [16] ``-g, --ground``: ground-truth file.
- * [17] ``-cfg, --cfg_file``: provide a custom configuration file.
- * [18] ``-v, --verbose``: controls verbosity level (0 to 4).
- * ``-db, --debug``: debug mode (save temporary files).
- * ``--oar``: for an Igrida run. Forces the program to use the executables computed for Igrida.
- * ``-h, --help``
+ * ``[1]`` *-i, --iter*: number of classification iterations.
+ * ``[2]`` *-t, --threads*: number of cores to use.
+ * ``[3]`` *-d, --dataset*: dataset to use.
+ * ``[4]`` *-c, --classifier*: classifier to use.
+ * ``[5]`` *-ts, --trainsize*: proportion of dataset to use for training.
+ * ``[6]`` *-s, --sim*: similarity type to use. Defaults to BIN.
+ * ``[7]`` *-nmin*: minimum number of synthetic labels.
+ * ``[8]`` *-nmax*: maximum number of synthetic labels.
+ * ``[9]`` *-di, --distrib*: synthetic annotation mode (RND, UNI, OVA). Defaults to RND.
+ * ``[10]`` *-p, --post*: post-processing task/algorithm (MCL or KNN, which requires a .qrel version of the ground-truth, see ``parse.py``).
+ * ``[11]`` *-cs, --cvg_step*: check convergence criterion every ``cs`` step.
+ * ``[12]`` *-cc, --cvg_criterion*: convergence criterion threshold. (Note that the current implementation of the convergence criterion with the concurrency of processes is far from perfect).
+ * ``[13]`` *-o, --output*: output folder.
+ * ``[14]`` *-te, --temp*: temporary folder.
+ * ``[15]`` *-in*: input data file.
+ * ``[16]`` *-g, --ground*: ground-truth file.
+ * ``[17]`` *-cfg, --cfg_file*: provide a custom configuration file.
+ * ``[18]`` *-v, --verbose*: controls verbosity level (0 - low to 4 - high).
+ * ``[-db, --debug]``: debug mode (save temporary files).
+ * ``[--oar]``: for usage on the cluster.
+ * ``[-h, --help]``
 
+#### notes
 
- **Main outputs:**
-
+ **main outputs:**
  * *output.log*: log file.
  * *sim_matrix_final.npy*: similarity matrix (numpy format. Use numpy.load(matrix_path) to use).
 
 
- **Verbosity levels:**
-
+ **verbosity levels:**
  * ``-v 0``: minimal verbose level; almost no printed trace.
  * ``-v 1``: Default.
  * ``-v 2``: Additional print trace.
  * ``-v 3``: Prints out the classifier's traces.
  * ``-v 4``: Outputs additional result (distributions plots, number of occurences in test for each entity ...) + save similarity matrix regularly.
 
- **Examples:**
+ ####examples
+ ** a typical run on *NER* **
+ ```
+ 	python main.py -d NER -N 150 -c CRF -nmin 300 -nmax 300
+ ```
+ 
+ ** a typical run on *AUDIOTINY* ** 
+ ```
+ 	python main.py -d AUDIO -N 300 -c HTK -nmin 20 -nmax 40
+ ```
 
- * a typical run on *NER*: ``python main.py -d NER -N 150 -c CRF -nmin 300 -nmax 300``
- * a typical run on *AUDIOTINY* ``python main.py -d AUDIO -N 300 -c HTK -nmin 20 -nmax 40``
+# Running on the cluster
+To run the experiments on a cluster (OAR scheduler), you can use the scripts located in the OAR folder. Each script configures the options for the cluster and then call the ``main.py`` script on one node. Once the computation is done, the corresponding similarity matrix is output in the folder ``/temp_dd/igrida-fs1/$USER/Outputs/Outputs_JobID``. These matrices can also be combined with the results of previous interations with a weighted average for instance.
 
-
-
-Running on Igrida
------------------
-To run the experiments on IGRIDA, use the scripts located in the OAR folder. Each script simply sets up the option for Igrida and then call the ``main.py`` script on one full node. Once the computation is done, the corresponding similarity matrix is output in the folder ``/temp_dd/igrida-fs1/$USER/Outputs/Outputs_JobID``. To combine those matrices, the user can then do a weighted average depending on the number of iterations for instance.
-
-**Usage on Igrida frontend (batch mode):** ::
+#### usage on the cluster frontend (batch mode)
 
 	oarsub -S ./oar_aqua.sh
 
 
-**Script Options:**
+**configuration options in the .sh file**
  * ``OAR -n [1]``: name of the job.
  * ``OAR -l nodes=[2], walltime=[3]``: [2] is the number of nodes to use. It should always be 1 so that ``main.py`` can use all the processes on the node, and no more than 1 because it can not manage several nodes (only processes). [3] is the limit of running time for the experiment with format hh:mm:ss.
  * ``OAR -p [4]``: condition on the resources to use (for instance for Aquaint we request a node with at least 45GB memory).
@@ -88,14 +87,13 @@ To run the experiments on IGRIDA, use the scripts located in the OAR folder. Eac
 
 The other options (DATA, ITER...) in the script are those of the ``main.py`` programm introduced previously.
 
-**Examples:**
+#### examples
 
  * a typical run on *Aquaint*: ``oarsub -S ./oar_aqua.sh`` (Default is OVA mode, 150 iterations per sample)
  * a typical run on *AUDIO* ``oarsub -S ./oar_aqua.sh`` (Default is 2000 iterations, HMM mixed type 1 and 2, 14 states total)
 
 
-General structure of the SIC implementation
--------------------------------------------
+# General structure of the implementation
  * ``main.py`` is a wrapper for the ``run_*`` functions. It sets up the correct parameters for the run, apply SIC and then stores and evaluates the matrix.
  * ``run_basic.py``, ``run_ova.py`` and ``run_wem.py`` takes care of running SIC (respectively normal SIC, SIC with OVA, SIC with EM similarity).
  * ``utils/one_step.py`` contains the code for a SIC iteration one one process/thread.
@@ -107,8 +105,7 @@ General structure of the SIC implementation
 
 
 
-Options and Configuration files
---------------------------------
+# Options and Configuration files
 The following is the list of the customizable options found in the configuration file and their roles:
 
 General options
@@ -318,18 +315,3 @@ Finally, for Aquaint:
  * ``parse_stat/retrieve_aqua_occurrences`` retrieves, for each sample, all its occurrences in the database and stores their position in a pickle file (1 file = 1 sample). The resulting files are used in OVA mode for Aquaint for parsing. The folder containing the pickle files should be given in the configuration file in section [AQUA], entry ``words_occurrences``. (note for the full Aquaint dataset this results in about 26000 files for 1.2 gigabuytes).
  * ``parse_stat/count_aqua_docs_scores``: computes a ``relevance`` score for each document in the Aquaint database. The higher the score, the more rare words the documents contains. This file is already computed and can be found in Data/AQUAINT/entity_occurrences_aqua and src/Precomputed.
 
-Requirements
-------------
-
-Main Python dependencies
-^^^^^^^^^^^^^^^^^^^^^^^^
- * Tested with Python 2.7
- * Numpy
- * Scipy
- * Matplotlib
-
-External libraries
-^^^^^^^^^^^^^^^^^^
- * [MCL](http://micans.org/mcl/), Markov clustering algorithm
- * [Wapiti](http://wapiti.limsi.fr/), CRF implementation
- * [HTK](http://htk.eng.cam.ac.uk/), HMM implementation
