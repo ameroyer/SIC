@@ -22,8 +22,7 @@ from annotation import annotate
 from classify import do_classify_step
 from parse import parse_AQUA_single_partial
 
-sys.path.append('/udd/aroyer/Stage/Code/Data/Audio/Scripts')
-sys.path.append('/home/amelie/Repositories/stage_inria_2015/Code/Data/Audio/Scripts')
+sys.path.append('../Data/Audio/Scripts')
 from extract_features import extract_features
 
 
