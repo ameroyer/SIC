@@ -16,7 +16,7 @@ from error import *
 from parse import parse_pattern
 
 # Allowed options values
-data_types = ['NER', 'AQUA', 'AUDIO', 'AUDIOTINY'] # Ester2 txt, Aquaint2, Ester2 audio, Ester2 audio tiny
+data_types = ['NER', 'AQUA', 'AUDIO'] # Ester2 txt, Aquaint2, Ester2 audio, Ester2 audio tiny
 annotation_types = ['RND', 'UNI', 'OVA'] # RaNDom, UNIque , One Versus All
 classifier_types = ['CRF', 'DT', 'HTK']
 task_types = ['MCL', 'KNN']
@@ -250,7 +250,7 @@ def parse_cmd_line():
 
     parser.add_argument('-v', '--verbose', dest='verbosity', type=int, help='controls verbosity level.')
     parser.add_argument('-db', '--debug', help='debugging mode.', action="store_true")
-    parser.add_argument('--oar', action="store_true", help="if present, set correct binary pathes for igrida")
+    parser.add_argument('--oar', action="store_true", help="if present, set correct binary pathes for the cluster")
 
     args = parser.parse_args()
 

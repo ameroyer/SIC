@@ -15,12 +15,6 @@ from collections import defaultdict, Counter
 import numpy as np
 import pickle
 
-#Notes on the Aquaint2 dataset
-  #Bug1: Some XML failures (some lines are badly formatted)
-  #Bug2: Some empty/missing tags
-  #Bug3: Some words in the ground-truth not appearing > 10 (at least: Selenium - Se ?)
-
-
 ################################################################################# FULL AQUA PARSING
 
 def parse_AQUA_single(classifier_type, data_file, label_to_index):
@@ -462,8 +456,8 @@ if __name__ == '__main__':
     aqua_entities_file = '/udd/aroyer/Stage/Code/src/Precomputed/aquaint_entities_list'
 
     stat_aqua(aqua_dir)
-    #retrieve_aqua_entities(aqua_dir, aqua_entities_file)
-    #retrieve_aqua_occurrences(aqua_dir, '/udd/aroyer/Stage/Code/src/Precomputed/AQUA_words_occurrences', aqua_entities_file)
-    #retrieve_aqua_occurrences_sentences(aqua_dir, '/udd/aroyer/Stage/Code/src/Precomputed/AQUA_words_sentences', aqua_entities_file)
-    #count_aqua_docs(aqua_dir, '/udd/aroyer/Stage/Code/Data/AQUAINT/Data_Occ', aqua_entities_file)
-    #count_aqua_docs_score(aqua_dir, '/udd/aroyer/Stage/Code/src/Precomputed/doc_scores_AQUA', aqua_entities_file)
+    retrieve_aqua_entities(aqua_dir, aqua_entities_file)
+    retrieve_aqua_occurrences(aqua_dir, '/Precomputed/AQUA_words_occurrences', aqua_entities_file)
+    retrieve_aqua_occurrences_sentences(aqua_dir, '/Precomputed/AQUA_words_sentences', aqua_entities_file)
+    count_aqua_docs(aqua_dir, 'Data/AQUAINT/Data_Occ', aqua_entities_file)
+    count_aqua_docs_score(aqua_dir, 'Preocmputed/doc_scores_AQUA', aqua_entities_file)

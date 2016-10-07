@@ -707,16 +707,7 @@ def parse_pattern(classifier_type, pattern_file):
 
 ################################################################################ AS MAIN: GENERATE QREL
 if __name__ == '__main__':
-    root_dir = '/udd/aroyer/Stage/Code/'
-
-    ## Qrel for AUDIOTINY
-    gt_audiot = os.path.join(root_dir, 'Data/Audio/20samples(50)/ground_truth')
-    index_to_label_audiot = os.path.join(root_dir, 'Data/Audio/20samples(50)/index_to_label')
-    with open(index_to_label_audiot, 'r') as f:
-        index_to_label = ['%s'%(l.split('\t')[1].strip()) for l in f if l.strip()]
-    ground_truth_qrel(gt_audiot, '%s.qrel'%gt_audiot, index_to_label)
-    raise SystemExit
-
+    root_dir = '../'
 
     ## Qrel for AUDIO
     gt_audio = os.path.join(root_dir, 'Data/Audio/ESTER2/audio_ester2.cluster')
@@ -727,7 +718,6 @@ if __name__ == '__main__':
         index_to_label = ['%s'%(l.split('\t')[1].strip()) for l in f if l.strip()]
     ground_truth_qrel(gt_audio, '%s.qrel'%gt_audio, index_to_label)
     ground_truth_qrel(gt_audio_homo, '%s.qrel'%gt_audio_homo, index_to_label)
-    raise SystemExit
 
     ## Qrel for NER
     gt_ner = os.path.join(root_dir, 'Data/NER/ester2_dev.cluster')
@@ -735,13 +725,3 @@ if __name__ == '__main__':
     with open(index_to_label_ner, 'r') as f:
         index_to_label = ['%d-%s'%(i, l.split('\t')[1].strip().replace(' ', '_')) for i, l in enumerate(f) if l.strip()]
     ground_truth_qrel(gt_ner, '%s.qrel'%gt_ner, index_to_label)
-    raise SystemExit
-
-    ## Qrel for AQUAINT
-    gt_folder = '/nfs/titanex/vol/text1/tmx-text/corpus/Aquaint2/references/'
-    aqua_dir = '/nfs/titanex/vol/text1/tmx-text/corpus/Aquaint2/'
-    aqua_entities_file =  os.path.join(root_dir, 'src/Precomputed/aquaint_entities_list')
-
-    documents = [f for f in os.listdir(gt_folder) if f.endswith('entries')]
-    for i, d in enumerate(documents):
-        ground_truth_AQUA_qrel(os.path.join(gt_folder, d), os.path.join(root_dir, 'src/Precomputed/', d) + '.qrel', aqua_entities_file)
