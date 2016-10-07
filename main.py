@@ -99,7 +99,7 @@ if __name__ == "__main__":
     os.environ['CLASSIFIER'] = classifier_binary
 
     # Additional parameters
-    with_unique_occurrences = (data_type in ['NER', 'AUDIO', 'AUDIOTINY']) # For optimisation purpose: tasks with only one occurrence per entity
+    with_unique_occurrences = (data_type in ['NER', 'AUDIO']) # For optimisation purpose: tasks with only one occurrence per entity
     preclustering = list(index_to_label) if (data_type in ['NER', 'AQUA']) else [] # Assign same training label to entities with the same class in preclustering (here: same wordform if NER or AQUAINT)
     writing_steps = [500, 1000, 2000, 3000, 4000] # Save similarity matrix at each step in writing_steps, if verbose >= 4
 
