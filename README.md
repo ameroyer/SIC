@@ -1,5 +1,11 @@
 # [ S I C ]  r e a d   m e
 
+Implementation of **SIC** (Similarity by Iterative Classification). See the following technical report for more details about the method and implementation:
+
+> **Similarity by diverting supervised machine learning — Application to knowledge discovery in multimedia content.**
+> [Technical Report Inria Rennes](https://hal.inria.fr/hal-01285965v1).
+> Amélie Royer, Vincent Claveau, Guillaume Gravier,  Teddy Furon
+
 
 # Requirements
 
@@ -44,27 +50,23 @@ where:
  * ``[--oar]``: for usage on the cluster.
  * ``[-h, --help]``
 
-#### notes
+This create log file **output.log** and a similarity matrix in the numpy format **sim_matrix_final.npy** (read with  ``numpy.load``) in the output directory.
 
- **main outputs:**
- * *output.log*: log file.
- * *sim_matrix_final.npy*: similarity matrix (numpy format. Use numpy.load(matrix_path) to use).
-
-
- **verbosity levels:**
+#### verbosity levels
  * ``-v 0``: minimal verbose level; almost no printed trace.
  * ``-v 1``: Default.
  * ``-v 2``: Additional print trace.
  * ``-v 3``: Prints out the classifier's traces.
  * ``-v 4``: Outputs additional result (distributions plots, number of occurences in test for each entity ...) + save similarity matrix regularly.
 
- ####examples
- ** a typical run on *NER* **
+ #### examples
+ 
+ ** a typical run on NER **
  ```
  	python main.py -d NER -N 150 -c CRF -nmin 300 -nmax 300
  ```
  
- ** a typical run on *AUDIOTINY* ** 
+ ** a typical run on AUDIOTINY ** 
  ```
  	python main.py -d AUDIO -N 300 -c HTK -nmin 20 -nmax 40
  ```
