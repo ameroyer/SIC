@@ -6,6 +6,7 @@ Implementation of **SIC** (Similarity by Iterative Classification), an unsupervi
 > [Technical Report Inria Rennes](https://hal.inria.fr/hal-01285965v1).
 > Amélie Royer, Vincent Claveau, Guillaume Gravier,  Teddy Furon
 
+See also the [online documentation](https://ameroyer.github.io/SIC/index.html) for additional information on the different scripts.
 
 # Requirements
 
