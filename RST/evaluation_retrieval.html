@@ -52,8 +52,45 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="evaluation-retrieval-module">
-<h1>evaluation_retrieval module<a class="headerlink" href="#evaluation-retrieval-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evaluation_retrieval">
+<span id="evaluation-retrieval-module"></span><h1>evaluation_retrieval module<a class="headerlink" href="#module-evaluation_retrieval" title="Permalink to this headline">¶</a></h1>
+<p><strong>evaluation_retrieval.py</strong>: Evaluation for the KNN task using Information retrieval measures.</p>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python evaluation_retrieval.py [1] -s [2] -ov [3] -cfg [4] --help
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (unnormalized similarities or pre-treated MCL format). The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder, usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-s</span></code>: number of samples to evaluate (<code class="docutils literal"><span class="pre">s</span></code> first samples of the ground-truth). If -1, the use the whole set. Defaults to -1</li>
+<li>[3] <code class="docutils literal"><span class="pre">-ov</span></code>: If positive, assume the resulting script was obtained in OVA mode for the sample of index <code class="docutils literal"><span class="pre">ov</span></code>. Defaults to -1.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p>This outputs the results of the neighbour retrieval evaluation on the given matrix.</p>
+</div></blockquote>
+<dl class="function">
+<dt id="evaluation_retrieval.evaluate">
+<code class="descclassname">evaluation_retrieval.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>data_type</em>, <em>co_occ</em>, <em>label_to_index</em>, <em>index_to_label</em>, <em>ground_truth</em>, <em>output_folder</em>, <em>samples=-1</em>, <em>ova=-1</em>, <em>writing=True</em>, <em>idtf=None</em>, <em>suffix=None</em><span class="sig-paren">)</span><a class="headerlink" href="#evaluation_retrieval.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates the KNN task on the given similarity matrix and ground-truth</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">datat_type</span></code> (<em>str</em>): Dataset used in the experiments (for ground-truth parsing).</li>
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): co-occurrence matrix.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>dictt</em>): Reverse mapping of index_to_label.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list mapping an index to the corresponding named entity; used to generate a readable clustering.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>dict</em>): ground truth clustering to compare against.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">samples</span></code> (<em>int, optional</em>): evaluation on the first <code class="docutils literal"><span class="pre">samples</span></code> samples (if -1, evaluation of all queries). Default to -1.</li>
+<li><code class="docutils literal"><span class="pre">ova</span></code> (<em>int, optional</em>): if non negative, evaluation on the sample <code class="docutils literal"><span class="pre">ova</span></code> only. Defaults to -1.</li>
+<li><code class="docutils literal"><span class="pre">writing</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code>, outputs the resulting measures in a file. Defaults to True.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

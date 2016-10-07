@@ -143,11 +143,153 @@
 <dd></dd></dl>
 
 </div>
-<div class="section" id="utils-classify-module">
-<h2>utils.classify module<a class="headerlink" href="#utils-classify-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.classify">
+<span id="utils-classify-module"></span><h2>utils.classify module<a class="headerlink" href="#module-utils.classify" title="Permalink to this headline">¶</a></h2>
+<p><strong>classify.py.</strong> For training and applying a classifier on the artifically annotated data set.</p>
+<dl class="function">
+<dt id="utils.classify.do_classify_step">
+<code class="descclassname">utils.classify.</code><code class="descname">do_classify_step</code><span class="sig-paren">(</span><em>n</em>, <em>temp_folder</em>, <em>train</em>, <em>test</em>, <em>test_entities_indices</em>, <em>coocc_matrix</em>, <em>unit_length</em>, <em>count_lab</em>, <em>classification_params</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.classify.do_classify_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the similarity for the current step given a classifier and synthetic annotation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step number.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the directory for storing temporary files.</li>
+<li><code class="docutils literal"><span class="pre">train</span></code>: annotated training set (structure may depend on the classifier).</li>
+<li><code class="docutils literal"><span class="pre">test</span></code>: formatted testing set.</li>
+<li><code class="docutils literal"><span class="pre">test_entities_indices</span></code> (<em>list</em>): indices of test entities and their position in the classifier output.</li>
+<li><code class="docutils literal"><span class="pre">cocc_matrix</span></code> (<em>ndarray</em>): shared similarity matrix.</li>
+<li><code class="docutils literal"><span class="pre">unit_length</span></code> (<em>int</em>): length of a locked cell in the matrix.</li>
+<li><code class="docutils literal"><span class="pre">count_lab</span></code> (<em>ndarray</em>): count how many times an entity has been classified as non-null in the test set.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>dict</em>): additional classification parameters.</li>
+<li><code class="docutils literal"><span class="pre">clean</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code>, removes the temporary files that were created. Defaults to <code class="docutils literal"><span class="pre">True</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">with_unique_occurrences</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code>, each entity occurence is considered unique and can receive a different label. Defaults to <code class="docutils literal"><span class="pre">True</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int, optional</em>): controls verbosity level. Defaults to 1.</li>
+<li><code class="docutils literal"><span class="pre">debug</span></code> (<em>bool, optional</em>): runs in debug mode.</li>
+<li><code class="docutils literal"><span class="pre">pretrained</span></code> (<em>optional</em>): pretrained model.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.classify.update_similarity">
+<code class="descclassname">utils.classify.</code><code class="descname">update_similarity</code><span class="sig-paren">(</span><em>n</em>, <em>result_iter</em>, <em>coocc_matrix</em>, <em>unit_cell_length</em>, <em>label_occurrences</em>, <em>similarity_type</em>, <em>verbose</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.classify.update_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Otpimizes the similarity matrix update in the case where multiple occurences correspond to the same entity(e.g. Aquaint2 case).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step number.</li>
+<li><code class="docutils literal"><span class="pre">result_iter</span></code> (<em>str</em>): output of the classification algorithm (Wapiti CRF).</li>
+<li><code class="docutils literal"><span class="pre">coocc_matrix</span></code> (<em>ndarray</em>): similarity matrix of the current thread.</li>
+<li><code class="docutils literal"><span class="pre">count_lab</span></code> (<em>ndarray</em>): count how many times an entity has been classified as non-null in the test set.</li>
+<li><code class="docutils literal"><span class="pre">similarity_type</span></code> (<em>str</em>): type of the similarity to use.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int, optional</em>): controls verbosity level. Defaults to 1.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_test_labels</span></code>: number of distinct annotated labels in the testing base</li>
+<li><code class="docutils literal"><span class="pre">weights</span></code>: repartition of the samples in the test classifications (only with weighted similarity).</li>
+<li><code class="docutils literal"><span class="pre">b</span></code> (<em>float</em>): penalty to be added at the end of construction.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.classify.update_similarity_unique">
+<code class="descclassname">utils.classify.</code><code class="descname">update_similarity_unique</code><span class="sig-paren">(</span><em>n</em>, <em>result_iter</em>, <em>coocc_matrix</em>, <em>unit_cell_length</em>, <em>label_occurrences</em>, <em>similarity_type</em>, <em>verbose</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.classify.update_similarity_unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the similarity matrix in the case where each occurence is an unique named entity (i.e. default case).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): step number.</li>
+<li><code class="docutils literal"><span class="pre">result_iter</span></code> (<em>str</em>): generator expression on the output of the classifier.</li>
+<li><code class="docutils literal"><span class="pre">coocc_matrix</span></code> (<em>ndarray</em>): similarity matrix of the current thread.</li>
+<li><code class="docutils literal"><span class="pre">unit_cell_length</span></code> (<em>int</em>): length of one locked cell in the matrix.</li>
+<li><code class="docutils literal"><span class="pre">label_occurrences</span></code> (<em>ndarray</em>): count how many times an entity has been classified as non-null in the test set.</li>
+<li><code class="docutils literal"><span class="pre">similarity_type</span></code> (<em>str</em>): type of the similarity to use.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int, optional</em>): controls verbosity level. Defaults to 1.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_test_labels</span></code>: number of distinct annotated labels in the testing base.</li>
+<li><code class="docutils literal"><span class="pre">weights</span></code>: repartition of the samples in the test classifications (only with weighted similarity).</li>
+<li><code class="docutils literal"><span class="pre">b</span></code> (<em>float</em>): penalty to be added at the end of the building.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="utils-em-analysis-module">
-<h2>utils.em_analysis module<a class="headerlink" href="#utils-em-analysis-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.em_analysis">
+<span id="utils-em-analysis-module"></span><h2>utils.em_analysis module<a class="headerlink" href="#module-utils.em_analysis" title="Permalink to this headline">¶</a></h2>
+<p><strong>em_analysis.py.</strong> EM estimation of the mixture parameters for each iteration.</p>
+<dl class="function">
+<dt id="utils.em_analysis.em_step">
+<code class="descclassname">utils.em_analysis.</code><code class="descname">em_step</code><span class="sig-paren">(</span><em>pi0</em>, <em>p0</em>, <em>p1</em>, <em>x</em>, <em>n_obs</em>, <em>N</em>, <em>cores</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.em_analysis.em_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>One single expectation maximization step. Multiprocess execution (each process computes the part of the summations for one set of observations).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">pi0</span></code> (<em>float</em>): current estimate of the pi0 parameter ( P(x~y) ).</li>
+<li><code class="docutils literal"><span class="pre">p1</span></code> (<em>float</em>): current estimate of the p1 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x ~ y).</li>
+<li><code class="docutils literal"><span class="pre">p0</span></code> (<em>float</em>): current estimate of the p0 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x &lt;&gt; y).</li>
+<li><code class="docutils literal"><span class="pre">x</span></code> (<em>list</em>): observation (as dict mapping unique observation -&gt; number of occurences).</li>
+<li><code class="docutils literal"><span class="pre">n_obs</span></code> (<em>int</em>): total number of observations.</li>
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): dimension of the multivariate Bernoulli.</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code> (<em>int</em>): number of cores to use.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">nz1</span></code> (<em>float</em>):  estimate of the z1 hidden variables.</li>
+<li><code class="docutils literal"><span class="pre">npi0</span></code> (<em>float</em>):  estimate of the pi0 parameter ( P(x~y) ).</li>
+<li><code class="docutils literal"><span class="pre">np0</span></code> (<em>float</em>): estimate of the p0 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x ~ y).</li>
+<li><code class="docutils literal"><span class="pre">np1</span></code> (<em>float</em>): estimate of the p1 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x &lt;&gt; y).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.em_analysis.em_step_threaded">
+<code class="descclassname">utils.em_analysis.</code><code class="descname">em_step_threaded</code><span class="sig-paren">(</span><em>pi0</em>, <em>p0</em>, <em>p1</em>, <em>obs</em>, <em>N</em>, <em>res_queue</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.em_analysis.em_step_threaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for parameter estimation on one thread.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">pi0</span></code> (<em>float</em>): current estimate of the pi0 parameter ( P(x~y) ).</li>
+<li><code class="docutils literal"><span class="pre">pi1</span></code> (<em>float</em>): current estimate of the p1 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x ~ y).</li>
+<li><code class="docutils literal"><span class="pre">pi0</span></code> (<em>float</em>): current estimate of the p0 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x &lt;&gt; y).</li>
+<li><code class="docutils literal"><span class="pre">obs</span></code> (<em>list</em>): observations given to this thread (as dict mapping unique observation -&gt; number of occurences).</li>
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): dimension of the multivariate Bernoulli.</li>
+<li><code class="docutils literal"><span class="pre">res_queue</span></code> (<em>Queue</em>): output queue.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.em_analysis.estimate_parameters_em">
+<code class="descclassname">utils.em_analysis.</code><code class="descname">estimate_parameters_em</code><span class="sig-paren">(</span><em>co_occ</em>, <em>N</em>, <em>p1i=0.9</em>, <em>p0i=0.1</em>, <em>pi0i=0.8</em>, <em>n_iter=20</em>, <em>cores=20</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.em_analysis.estimate_parameters_em" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expectation Maximization on 2-components Bernoulli mixture.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>list</em>): list of observations.</li>
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): dimension of an observation (here, corresponds to the number of considered iterations).</li>
+<li><code class="docutils literal"><span class="pre">pi1i</span></code> (<em>float, optional</em>): initial estimate of the p1 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x ~ y). Defaults to 0.9.</li>
+<li><code class="docutils literal"><span class="pre">pi0i</span></code> (<em>float, optional</em>): initial estimate of the p0 parameter (P(c1(c)=c1(y)...cN(x)=cN(y) | x &lt;&gt; y). Defaults to 0.1.</li>
+<li><code class="docutils literal"><span class="pre">pi0i</span></code> (<em>float, optional</em>): initial estimate of the pi0 parameter ( P(x~y) ). Defaults to 0.2.</li>
+<li><code class="docutils literal"><span class="pre">n_iter</span></code> (<em>int, optional</em>): number of iterations. Defaults to 20.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-utils.error">
 <span id="utils-error-module"></span><h2>utils.error module<a class="headerlink" href="#module-utils.error" title="Permalink to this headline">¶</a></h2>
@@ -256,14 +398,353 @@
 <dd></dd></dl>
 
 </div>
-<div class="section" id="utils-matrix-op-module">
-<h2>utils.matrix_op module<a class="headerlink" href="#utils-matrix-op-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.matrix_op">
+<span id="utils-matrix-op-module"></span><h2>utils.matrix_op module<a class="headerlink" href="#module-utils.matrix_op" title="Permalink to this headline">¶</a></h2>
+<p><strong>matrix_op.py.</strong> Functions operating on the full similarity matrix (normalization and distribution analysis).</p>
+<dl class="function">
+<dt id="utils.matrix_op.ROC_analysis">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">ROC_analysis</code><span class="sig-paren">(</span><em>line</em>, <em>name</em>, <em>output_folder</em>, <em>ground_truth</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.ROC_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a ROC curve for one given sample (one line of the matrix).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">line</span></code> (<em>ndarray</em>): similarities for one sample.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> (<em>str</em>): prefix for naming the plots.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to directory to output the plots.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>str</em>): indices of the samples belonging to the same class as the current sample.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.ROC_mean_analysis">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">ROC_mean_analysis</code><span class="sig-paren">(</span><em>lines</em>, <em>key</em>, <em>output_folder</em>, <em>gt</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.ROC_mean_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots all ROC curve and their horizontal/vertical means for several samples of the same class (lines of the matrix).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">line</span></code> (<em>ndarray</em>): similarities for one sample.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> (<em>str</em>): prefix for naming the plots.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to directory to output the plots.</li>
+<li><code class="docutils literal"><span class="pre">gt</span></code> (<em>list</em>): indices of the samples belonging to the currently considered class.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.distribution_analysis">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">distribution_analysis</code><span class="sig-paren">(</span><em>line, name, output_folder, temp_folder, ground_truth, kbest=[2000, 1000, 500, 200], mode='matlab'</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.distribution_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the similarities histogram and densities (+ ground-truth display) for a line (sample) of the similarity matrix, at various scales.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">line</span></code> (<em>ndarray</em>): <strong>sorted</strong> similarities in increasing order for one sample.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> (<em>str</em>): prefix for naming the plots.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to directory to output the plots.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to directory to output temporary plots (before concatenation).</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code>: indices of samples belonging to the same class as current sample.</li>
+<li><code class="docutils literal"><span class="pre">kbest</span></code> (<em>list, optional</em>): indices for zoom ins (keep the <code class="docutils literal"><span class="pre">k</span></code> best values, for all <code class="docutils literal"><span class="pre">k</span></code> in <code class="docutils literal"><span class="pre">kbest</span></code>).</li>
+<li><code class="docutils literal"><span class="pre">mode</span></code> (<em>str</em>): if &#8216;matlab&#8217;, then plots the distribution on the whole interval using matplotlib. If &#8216;R&#8217;, plots the distribution for all zoom-values in <code class="docutils literal"><span class="pre">kbest</span></code> using <code class="docutils literal"><span class="pre">R</span></code> (requires <code class="docutils literal"><span class="pre">ggplot2</span></code> library).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.keep_k_best">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">keep_k_best</code><span class="sig-paren">(</span><em>co_occ</em>, <em>k=200</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.keep_k_best" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keep the <code class="docutils literal"><span class="pre">k</span></code> best values in the matrix and set the rest to 0. Relies on the bottleneck library for fast sort.</p>
+<p>Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): input matrix.</li>
+<li><code class="docutils literal"><span class="pre">k</span></code> (<em>int, optional</em>): number of values to keep. Defaults to 200.</li>
+</ul>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">normalized</span></code> (<em>ndarray</em>): normalized matrix.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.normalize">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">normalize</code><span class="sig-paren">(</span><em>co_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a normalized version of the input matrix.</p>
+<p>Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): co-occurence matrix.</li>
+</ul>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">normalized</span></code> (<em>ndarray</em>): a normalized version of the co-occurence matrix.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.normalize_gauss_global">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">normalize_gauss_global</code><span class="sig-paren">(</span><em>co_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.normalize_gauss_global" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the full matrix with respect to its global standard deviation and mean (X &lt;- (X - mean) / std).</p>
+<p>Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): input matrix.</li>
+</ul>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">normalized</span></code> (<em>ndarray</em>): normalized matrix.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.normalize_gauss_local">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">normalize_gauss_local</code><span class="sig-paren">(</span><em>co_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.normalize_gauss_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the full matrix line by line with respect to their global standard deviation and mean (X &lt;- (X - mean) / std).</p>
+<p>Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): input matrix.</li>
+</ul>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">normalized</span></code> (<em>ndarray</em>): normalized matrix.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.normalize_min_max">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">normalize_min_max</code><span class="sig-paren">(</span><em>co_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.normalize_min_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the full matrix globally with respect to its minimum and maximum value (X &lt;- (X - min) / (max - min)).</p>
+<p>Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): input matrix.</li>
+</ul>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">normalized</span></code> (<em>ndarray</em>): normalized matrix.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.statistical_analysis_binary">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">statistical_analysis_binary</code><span class="sig-paren">(</span><em>line</em>, <em>rnd_distrib</em>, <em>ground_truth</em>, <em>temp_folder</em>, <em>output_folder</em>, <em>name</em>, <em>suffix=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.statistical_analysis_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>For binary SIC: plots the similarity distribution and its given theoretical model (Poisson Binomial).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">line</span></code> (<em>list</em>): similarities for the considered sample x.</li>
+<li><code class="docutils literal"><span class="pre">rnd_distrib</span></code> (<em>list</em>): values of the discrete random case distribution (<code class="docutils literal"><span class="pre">k</span> <span class="pre">-&gt;</span> <span class="pre">P(X</span> <span class="pre">=</span> <span class="pre">k)</span></code>)</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>list</em>): indices of the samples in the same class as x.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the folder containing the temporary files.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> (<em>str</em>): string representation of the considered sample.</li>
+<li><code class="docutils literal"><span class="pre">suffix</span></code> (<em>str, optional</em>): additional suffix for the output file. Defaults to None (no suffix).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.matrix_op.statistical_analysis_weighted">
+<code class="descclassname">utils.matrix_op.</code><code class="descname">statistical_analysis_weighted</code><span class="sig-paren">(</span><em>line</em>, <em>N</em>, <em>ground_truth</em>, <em>temp_folder</em>, <em>output_folder</em>, <em>name</em>, <em>step=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.matrix_op.statistical_analysis_weighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the similarity distribution and gaussian theoretical distribution in the case of a weighted similarity (negative samples).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">line</span></code> (<em>list</em>): similarities for the considered sample x.</li>
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): standard deviation of the gaussian.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>list</em>): indices of the samples in the same class as x.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the folder containing the temporary files.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">name</span></code> (<em>str</em>): string representation of the considered sample.</li>
+<li><code class="docutils literal"><span class="pre">step</span></code> (<em>float, optional</em>): step between x-axis&#8217; ticks.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="utils-one-step-module">
-<h2>utils.one_step module<a class="headerlink" href="#utils-one-step-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.one_step">
+<span id="utils-one-step-module"></span><h2>utils.one_step module<a class="headerlink" href="#module-utils.one_step" title="Permalink to this headline">¶</a></h2>
+<p><strong>one_step.py.</strong> one classification step for building the similarity. Designed for a threaded execution.</p>
+<dl class="function">
+<dt id="utils.one_step.split_data">
+<code class="descclassname">utils.one_step.</code><code class="descname">split_data</code><span class="sig-paren">(</span><em>n</em>, <em>data</em>, <em>data_type</em>, <em>train_frac</em>, <em>classifier_type</em>, <em>annotation_params</em>, <em>temp_folder</em>, <em>with_full_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.one_step.split_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the given database into a training and testing set.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): iteration identifier.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): initial data structure.</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): data set used for the experiments.</li>
+<li><code class="docutils literal"><span class="pre">train_frac</span></code> (<em>float</em>): proportion of the database to keep for training.</li>
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of classifier (for on-the-fly parsing format in AQUAINT).</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>str</em>): annotation parameter for OVA.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">with_full_test</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code>, use the whole dataset (including training) for testing.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">train</span></code> (<em>list</em>): the data kept for training (generator).</li>
+<li><code class="docutils literal"><span class="pre">test</span></code> (<em>list</em>): the data kept for testing (generator).</li>
+<li><code class="docutils literal"><span class="pre">test_indices</span></code> (<em>list</em>): indices of the test samples in the whole data; used to compute the number of test occurrences afterwards. (Except for AQUAINT where test_indices directly returns the occurrences of each samples in the test set).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.one_step.thread_step">
+<code class="descclassname">utils.one_step.</code><code class="descname">thread_step</code><span class="sig-paren">(</span><em>n</em>, <em>coocc_matrix</em>, <em>unit_cell_length</em>, <em>n_samples</em>, <em>sim_queue</em>, <em>data</em>, <em>temp_folder</em>, <em>data_type</em>, <em>annotation_params</em>, <em>classification_params</em>, <em>verbose=1</em>, <em>debug=False</em>, <em>with_unique_occurrences=False</em>, <em>preclustering=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.one_step.thread_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>One classification iteration. Results are output in a queue.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n</span></code> (<em>int</em>): index of current iteration.</li>
+<li><code class="docutils literal"><span class="pre">coocc_matrix</span></code> (<em>array</em>): similarity matrix (shared in memory).</li>
+<li><code class="docutils literal"><span class="pre">unit_cell_length</span></code> (<em>int</em>): length of one locked cell in the matrix.</li>
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples in the data set.</li>
+<li><code class="docutils literal"><span class="pre">sim_queue</span></code> (<em>Queue</em>): output queue.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): initial data structure.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): data set used.</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>dict</em>): parameters for the synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>dict</em>): parameters for the supervised classification algorithm.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int, optional</em>): controls the verbosity level. Defaults to 1.</li>
+<li><code class="docutils literal"><span class="pre">debug</span></code> (<em>bool, optional</em>): runs in debugging mode. Defaults to False.</li>
+<li><code class="docutils literal"><span class="pre">with_unique_occurrences</span></code> (<em>bool, optional</em>): <code class="docutils literal"><span class="pre">True</span></code> when occurrences of a same entity are distinct items in the database (e.g. NER). Defaults to <code class="docutils literal"><span class="pre">False</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">preclustering</span></code> (<em>list, optional</em>): Entity index to class mapping. This clustring is used to given the same annotation to entities in the same class.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="utils-opt-module">
-<h2>utils.opt module<a class="headerlink" href="#utils-opt-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.opt">
+<span id="utils-opt-module"></span><h2>utils.opt module<a class="headerlink" href="#module-utils.opt" title="Permalink to this headline">¶</a></h2>
+<p><strong>opt.py.</strong>: Functions designed for vectorial updates of the similarity matrix instead of cell by cell.</p>
+<dl class="function">
+<dt id="utils.opt.cartesian">
+<code class="descclassname">utils.opt.</code><code class="descname">cartesian</code><span class="sig-paren">(</span><em>arrays</em>, <em>out=None</em>, <em>numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.opt.cartesian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a cartesian product of input arrays.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd><ul class="first last simple">
+<li>arrays : list of array-like. 1-D arrays to form the cartesian product of.</li>
+<li>out : ndarray. Array to place the cartesian product in.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>out : ndarray. 2-D array of shape (M, len(arrays)) containing cartesian products formed of input arrays.</li>
+</ul>
+</dd>
+<dt>See:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="http://stackoverflow.com/questions/1208118/using-numpy-to-build-an-array-of-all-combinations-of-two-arrays/1235363#1235363">http://stackoverflow.com/questions/1208118/using-numpy-to-build-an-array-of-all-combinations-of-two-arrays/1235363#1235363</a></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.opt.cartesian_prod">
+<code class="descclassname">utils.opt.</code><code class="descname">cartesian_prod</code><span class="sig-paren">(</span><em>arrays</em>, <em>full=None</em>, <em>out=None</em>, <em>numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.opt.cartesian_prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the products for all possible cartesian combinations of the arrays components.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">arrays</span></code>: list of array-like.</li>
+<li><code class="docutils literal"><span class="pre">full</span></code> (<em>int</em>): length of the base array. Starting value should be None.</li>
+<li><code class="docutils literal"><span class="pre">out</span></code> (<em>ndarray</em>): array where to put the result.</li>
+<li><code class="docutils literal"><span class="pre">numpy</span></code> (<em>bool, optional</em>): If False, convert the arrays to numpy type. Defaults to True.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">out</span></code> (<em>ndarray</em>): array containing the products for all possible cartesian combinations.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.opt.pairs_combination">
+<code class="descclassname">utils.opt.</code><code class="descname">pairs_combination</code><span class="sig-paren">(</span><em>a</em>, <em>numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.opt.pairs_combination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the possible pair combinations from an index array.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">a</span></code>: array-like.</li>
+<li><code class="docutils literal"><span class="pre">numpy</span></code> (<em>bool, optional</em>): If False, convert the arrays to numpy type. Defaults to True.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">out</span></code>: array containing all the possible pair combinations from an index array.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.opt.pairs_combination_indices">
+<code class="descclassname">utils.opt.</code><code class="descname">pairs_combination_indices</code><span class="sig-paren">(</span><em>a</em>, <em>n_samples</em>, <em>numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.opt.pairs_combination_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the possible pairs combinations from an index array, under their index form (upper triangle matrix).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">a</span></code>: array-like.</li>
+<li><code class="docutils literal"><span class="pre">n_samples</span></code>: size of the 2D matrix (ie max possible value of the index + 1)</li>
+<li><code class="docutils literal"><span class="pre">numpy</span></code> (<em>bool, optional</em>): If False, convert the arrays to numpy type. Defaults to True.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">out</span></code>: array containing the indices of all  possible pairs combinations.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.opt.product_combination">
+<code class="descclassname">utils.opt.</code><code class="descname">product_combination</code><span class="sig-paren">(</span><em>a</em>, <em>numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.opt.product_combination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the possible pair product combinations from an index array.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">a</span></code>: array-like.</li>
+<li><code class="docutils literal"><span class="pre">numpy</span></code> (<em>bool, optional</em>): If False, convert the arrays to numpy type. Defaults to True.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">out</span></code>: array containing all the possible pair product combinations from an index array.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-utils.output_format">
 <span id="utils-output-format-module"></span><h2>utils.output_format module<a class="headerlink" href="#module-utils.output_format" title="Permalink to this headline">¶</a></h2>
@@ -683,14 +1164,389 @@
 </dd></dl>
 
 </div>
-<div class="section" id="utils-parse-stat-module">
-<h2>utils.parse_stat module<a class="headerlink" href="#utils-parse-stat-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.parse_stat">
+<span id="utils-parse-stat-module"></span><h2>utils.parse_stat module<a class="headerlink" href="#module-utils.parse_stat" title="Permalink to this headline">¶</a></h2>
+<p><strong>parse.py_stat.</strong> Additional functions for parsing some statistics and precomputing information on the data sets (mostly Aquaint).</p>
+<dl class="function">
+<dt id="utils.parse_stat.count_aqua_docs">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">count_aqua_docs</code><span class="sig-paren">(</span><em>directory</em>, <em>output_folder</em>, <em>aqua_entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.count_aqua_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the number occurrences of each word in each document as well as for the whole data set</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">directory</span></code> (<em>str</em>): directory containing all xml documents of the dataset.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to output directory.</li>
+<li><code class="docutils literal"><span class="pre">aqua_entities_file</span></code> (<em>str</em>): path to the file listing all AQUAINT entities.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.count_aqua_docs_score">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">count_aqua_docs_score</code><span class="sig-paren">(</span><em>directory</em>, <em>output_file</em>, <em>aqua_entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.count_aqua_docs_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a score for each document based on how rare are the words occuring in the document.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">directory</span></code> (<em>str</em>): path to the directory containing the Aquaint data files.</li>
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the file to write the output scores.</li>
+<li><code class="docutils literal"><span class="pre">aqua_entities_file</span></code> (<em>str</em>): path to the file containing all aquaint entities and their number of occurrences.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.parse_AQUA">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">parse_AQUA</code><span class="sig-paren">(</span><em>classifier_type</em>, <em>data_folder</em>, <em>label_to_index</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.parse_AQUA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse all data files from the AQUAINT folder.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of the classifier that will be used for the experiment.</li>
+<li><code class="docutils literal"><span class="pre">data_folder</span></code> (<em>str</em>): path to folder containing all data files.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>str</em>): maps a word to an integer index (alphabetical order). Used to maps multiple occurences of a same word to the same index.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): structure containing the data (file -&gt; docs -&gt; sentence -&gt; words).</li>
+<li><code class="docutils literal"><span class="pre">data_occurrences</span></code> (<em>list</em>): number of entity occurrences in each sentence/docs of the data.</li>
+<li><code class="docutils literal"><span class="pre">summary</span></code> (<em>str</em>): additional information on the dataset.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.parse_AQUA_entities">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">parse_AQUA_entities</code><span class="sig-paren">(</span><em>entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.parse_AQUA_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the file containing all entities of the AQUAINT2 dataset to build the index_to_label and label_to_index mappings.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">entities_file</span></code> (<em>str</em>): file containing the retrieved entities and number of occurences.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list assocating a sample&#8217;s index with its string representation.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>list</em>): reversed mapping of index_to_label.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.parse_AQUA_single">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">parse_AQUA_single</code><span class="sig-paren">(</span><em>classifier_type</em>, <em>data_file</em>, <em>label_to_index</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.parse_AQUA_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse the full given AQUAINT data file.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">classifier_type</span></code> (<em>str</em>): type of the classifier that will be used for the experiment.</li>
+<li><code class="docutils literal"><span class="pre">data_file</span></code> (<em>str</em>): path tothe data file.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>str</em>): maps a word to an integer index (alphabetical order). Used to maps multiple occurences of a same word to the same index.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>list</em>): structure containing the data (file -&gt; docs -&gt; sentence -&gt; words).</li>
+<li><code class="docutils literal"><span class="pre">data_occurrences</span></code> (<em>list</em>): number of entity occurrences in each sentence/docs of the data.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.retrieve_aqua_entities">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">retrieve_aqua_entities</code><span class="sig-paren">(</span><em>directory</em>, <em>output_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.retrieve_aqua_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all interesting entities for the AQUAINT2 dataset (common names with strictly more than 10 occurences).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">directory</span></code> (<em>str</em>): directory containing all xml documents of the dataset.</li>
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path where to output the retrieved entities and number of occurences.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.retrieve_aqua_occurrences">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">retrieve_aqua_occurrences</code><span class="sig-paren">(</span><em>directory</em>, <em>output_file</em>, <em>aqua_entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.retrieve_aqua_occurrences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all occurrences of each word in the dataset (position of their occurrences given as a tupple file -&gt; doc -&gt; sentence)</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">directory</span></code> (<em>str</em>): path to the directory containing the Aquaint data files.</li>
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the directory to write the output files (1 file = 1 word).</li>
+<li><code class="docutils literal"><span class="pre">aqua_entities_file</span></code> (<em>str</em>): path to the file containing all aquaint entities and their number of occurrences.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.retrieve_aqua_occurrences_sentences">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">retrieve_aqua_occurrences_sentences</code><span class="sig-paren">(</span><em>directory</em>, <em>output_file</em>, <em>aqua_entities_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.retrieve_aqua_occurrences_sentences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <code class="docutils literal"><span class="pre">parse_stat.retrieve_aqua_occurrences</span></code>, but outputs the sentence of the occurrences rather than its position.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">directory</span></code> (<em>str</em>): path to the directory containing the Aquaint data files.</li>
+<li><code class="docutils literal"><span class="pre">output_file</span></code> (<em>str</em>): path to the file to write the output scores.</li>
+<li><code class="docutils literal"><span class="pre">aqua_entities_file</span></code> (<em>str</em>): path to the file containing all aquaint entities and their number of occurrences.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.parse_stat.stat_aqua">
+<code class="descclassname">utils.parse_stat.</code><code class="descname">stat_aqua</code><span class="sig-paren">(</span><em>directory</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.parse_stat.stat_aqua" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes some statistics about the AQUAINT dataset.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">directory</span></code> (<em>str</em>): directory containing all xml documents of the dataset.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="utils-plot-module">
-<h2>utils.plot module<a class="headerlink" href="#utils-plot-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.plot">
+<span id="utils-plot-module"></span><h2>utils.plot module<a class="headerlink" href="#module-utils.plot" title="Permalink to this headline">¶</a></h2>
+<p><strong>plot.py.</strong> Functions related to plotting and data visualization.</p>
+<dl class="function">
+<dt id="utils.plot.compare_params">
+<code class="descclassname">utils.plot.</code><code class="descname">compare_params</code><span class="sig-paren">(</span><em>true_params</em>, <em>em_params</em>, <em>ip0</em>, <em>output_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.compare_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots several visual comparisons of the parameters estimation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">true_params</span></code> (<em>list</em>): ground-truth p0 (true_params[0]) and p1 (true_params[1]) parameters.</li>
+<li><code class="docutils literal"><span class="pre">em_params</span></code> (<em>dict</em>): EM estimates of p0 (em_params[0]) and p1 (em_params[1]) parameters.</li>
+<li><code class="docutils literal"><span class="pre">ip0</span></code> (<em>list</em>): p0 parameters estimates with independance assumption.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.convergence_curve">
+<code class="descclassname">utils.plot.</code><code class="descname">convergence_curve</code><span class="sig-paren">(</span><em>output_folder</em>, <em>log_file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.convergence_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the evolution of the correlation coefficients for the convergence experiments.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the directory for the outputs.</li>
+<li><code class="docutils literal"><span class="pre">log_file</span></code> (<em>str</em>): path to the log file output during the experiments (convergence_analysis.py script)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.expected_binary">
+<code class="descclassname">utils.plot.</code><code class="descname">expected_binary</code><span class="sig-paren">(</span><em>true_params</em>, <em>em_params</em>, <em>tpi0</em>, <em>epi0</em>, <em>output_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.expected_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the 2-components Poisson Binomial mixture model given its parameters.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">true_params</span></code> (<em>list</em>): ground-truth p0 (true_params[0]) and p1 (true_params[1]) parameters.</li>
+<li><code class="docutils literal"><span class="pre">em_params</span></code> (<em>dict</em>): EM estimates of p0 (em_params[0]) and p1 (em_params[1]) parameters.</li>
+<li><code class="docutils literal"><span class="pre">tpi0</span></code> (<em>float</em>): ground-truth pi0 estimate.</li>
+<li><code class="docutils literal"><span class="pre">epi0</span></code> (<em>float</em>): EM pi0 estimate.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.fraction_plot">
+<code class="descclassname">utils.plot.</code><code class="descname">fraction_plot</code><span class="sig-paren">(</span><em>clustering</em>, <em>ground_truth</em>, <em>output_name</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.fraction_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots an histogram representation of a clustering with colors representing the ground-truth clustering.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>(cluster -&gt; values) dict</em>): a dict representation of a clustering.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>(cluster -&gt; values) dict</em>): a dict representation of the ground-truth clustering.</li>
+<li><code class="docutils literal"><span class="pre">output_name</span></code> (<em>str</em>): prefix of the file in which to output the figure.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.get_Aquaint_graph">
+<code class="descclassname">utils.plot.</code><code class="descname">get_Aquaint_graph</code><span class="sig-paren">(</span><em>start</em>, <em>synonyms</em>, <em>nodes</em>, <em>edges</em>, <em>level</em>, <em>maxlevel</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.get_Aquaint_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an excerpt networkx graph from the Aquaint ground-truth. Recursive function.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">start</span></code> (<em>list</em>): list of nodes to build edge from.</li>
+<li><code class="docutils literal"><span class="pre">synonyms</span></code> (<em>dict</em>): Aquaint ground-truth neighbours relations.</li>
+<li><code class="docutils literal"><span class="pre">nodes</span></code> (<em>dict</em>): list of nodes already built, organized by depth (minimum depth relatively to one of the starting nodes).</li>
+<li><code class="docutils literal"><span class="pre">edges</span></code> (<em>list</em>): list of edges already built.</li>
+<li><code class="docutils literal"><span class="pre">level</span></code> (<em>int</em>): current depth (starting at 0).</li>
+<li><code class="docutils literal"><span class="pre">maxlevel</span></code> (<em>int</em>): max depth to consider.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.heatmap">
+<code class="descclassname">utils.plot.</code><code class="descname">heatmap</code><span class="sig-paren">(</span><em>similarity_matrix</em>, <em>ground_truth</em>, <em>output_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a heat map of the similarity matrix.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">sim_matrix</span></code> (<em>ndarray</em>): similarity matrix.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>dict</em>): ground-truth clustering.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.histo_cluster">
+<code class="descclassname">utils.plot.</code><code class="descname">histo_cluster</code><span class="sig-paren">(</span><em>clustering</em>, <em>output_name</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.histo_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots an histogram representation of a clustering (number of samples per cluster).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>(cluster -&gt; values) dict</em>): a dict representation of a clustering.</li>
+<li><code class="docutils literal"><span class="pre">output_name</span></code> (<em>str</em>): prefix of the file in which to output the figure.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.is_in_upper_level">
+<code class="descclassname">utils.plot.</code><code class="descname">is_in_upper_level</code><span class="sig-paren">(</span><em>nodes</em>, <em>word</em>, <em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.is_in_upper_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines wether a node has already been seen as a closer neighbour (level).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">nodes</span></code> (<em>dict</em>): dict mapping a level to the nodes it contains.</li>
+<li><code class="docutils literal"><span class="pre">word</span></code> (<em>str</em>): label of the node to consider.</li>
+<li><code class="docutils literal"><span class="pre">level</span></code> (<em>int</em>): current level.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.mds_representation">
+<code class="descclassname">utils.plot.</code><code class="descname">mds_representation</code><span class="sig-paren">(</span><em>sim_matrix</em>, <em>ground_truth</em>, <em>index_to_label</em>, <em>colors</em>, <em>output_folder</em>, <em>dim=2</em>, <em>cores=20</em>, <em>mode='mds'</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.mds_representation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute euclidean distances (MDS) from the computed similarity matrix</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">sim_matrix</span></code> (<em>ndarray</em>): similarity matrix.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>dict</em>): ground-truth clustering.</li>
+<li><code class="docutils literal"><span class="pre">colors</span></code> (<em>dict</em>): mapping from a class to a color.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">dim</span></code> (<em>int, optional</em>): number of dimensions in the metric space. Defaults to 2.</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code> (<em>int, optional</em>): number of cores to use (threaded MDS).</li>
+<li><code class="docutils literal"><span class="pre">mode</span></code> (<em>str, optional</em>): Projection algorithm (<code class="docutils literal"><span class="pre">'mds'</span></code> or <code class="docutils literal"><span class="pre">'tsne'</span></code>).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.on_the_fly_cvg">
+<code class="descclassname">utils.plot.</code><code class="descname">on_the_fly_cvg</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.on_the_fly_cvg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot some statistics on the on-the-fly convergence criterion.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">file</span></code> (<em>str</em>): path to the file containing the measurements of the on-the-fly criterion</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.pie_chart">
+<code class="descclassname">utils.plot.</code><code class="descname">pie_chart</code><span class="sig-paren">(</span><em>clusters</em>, <em>output_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.pie_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a pie-chart representation of a clustering.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>(cluster -&gt; values) dict</em>): a dict representation of a clustering.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to output folder.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.plot.plot_Aquaint_graph">
+<code class="descclassname">utils.plot.</code><code class="descname">plot_Aquaint_graph</code><span class="sig-paren">(</span><em>words</em>, <em>aqua_gt</em>, <em>level=1</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.plot.plot_Aquaint_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot an excerpt  graph from the Aquaint ground-truth using the networkx library.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">words</span></code> (<em>list</em>): nodes to consider as origin.</li>
+<li><code class="docutils literal"><span class="pre">aqua_gt</span></code> (<em>str</em>): path to the Aquaint ground-truth.</li>
+<li><code class="docutils literal"><span class="pre">level</span></code> (<em>int</em>): max depth to consider (starting at 0).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="utils-probability-fit-module">
-<h2>utils.probability_fit module<a class="headerlink" href="#utils-probability-fit-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils.probability_fit">
+<span id="utils-probability-fit-module"></span><h2>utils.probability_fit module<a class="headerlink" href="#module-utils.probability_fit" title="Permalink to this headline">¶</a></h2>
+<p><strong>probability_fit.py.</strong> functions related to estimate probability distribution.</p>
+<dl class="function">
+<dt id="utils.probability_fit.estimate_poisson_binomial">
+<code class="descclassname">utils.probability_fit.</code><code class="descname">estimate_poisson_binomial</code><span class="sig-paren">(</span><em>N</em>, <em>p_values</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.probability_fit.estimate_poisson_binomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the values of a Poisson Binomial distribution given its p-parameters.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): number of independant Bernouilli experiments.</li>
+<li><code class="docutils literal"><span class="pre">p_values</span></code> (<em>list</em>): Bernouilli parameter for each experiment.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">values</span></code> (<em>list</em>): values taken by the distribution (<code class="docutils literal"><span class="pre">k</span> <span class="pre">-&gt;</span> <span class="pre">P(X</span> <span class="pre">=</span> <span class="pre">k)</span></code>)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.probability_fit.sample_from_pdf">
+<code class="descclassname">utils.probability_fit.</code><code class="descname">sample_from_pdf</code><span class="sig-paren">(</span><em>N</em>, <em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.probability_fit.sample_from_pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns N samples from a given discrete distribution <code class="docutils literal"><span class="pre">P</span></code>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">N</span></code> (<em>int</em>): number of samples to draw.</li>
+<li><code class="docutils literal"><span class="pre">values</span></code> (<em>list</em>): values taken by the discrete distribution (<code class="docutils literal"><span class="pre">k</span> <span class="pre">-&gt;</span> <span class="pre">P(X</span> <span class="pre">=</span> <span class="pre">k)</span></code>)</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">samples</span></code> (<em>list</em>): <code class="docutils literal"><span class="pre">N</span></code> samples drawn from the <code class="docutils literal"><span class="pre">P</span></code> distribution</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-utils.read_config">
 <span id="utils-read-config-module"></span><h2>utils.read_config module<a class="headerlink" href="#module-utils.read_config" title="Permalink to this headline">¶</a></h2>
@@ -790,18 +1646,18 @@
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-utils.annotation">utils.annotation module</a></li>
-<li><a class="reference internal" href="#utils-classify-module">utils.classify module</a></li>
-<li><a class="reference internal" href="#utils-em-analysis-module">utils.em_analysis module</a></li>
+<li><a class="reference internal" href="#module-utils.classify">utils.classify module</a></li>
+<li><a class="reference internal" href="#module-utils.em_analysis">utils.em_analysis module</a></li>
 <li><a class="reference internal" href="#module-utils.error">utils.error module</a></li>
 <li><a class="reference internal" href="#module-utils.eval">utils.eval module</a></li>
-<li><a class="reference internal" href="#utils-matrix-op-module">utils.matrix_op module</a></li>
-<li><a class="reference internal" href="#utils-one-step-module">utils.one_step module</a></li>
-<li><a class="reference internal" href="#utils-opt-module">utils.opt module</a></li>
+<li><a class="reference internal" href="#module-utils.matrix_op">utils.matrix_op module</a></li>
+<li><a class="reference internal" href="#module-utils.one_step">utils.one_step module</a></li>
+<li><a class="reference internal" href="#module-utils.opt">utils.opt module</a></li>
 <li><a class="reference internal" href="#module-utils.output_format">utils.output_format module</a></li>
 <li><a class="reference internal" href="#module-utils.parse">utils.parse module</a></li>
-<li><a class="reference internal" href="#utils-parse-stat-module">utils.parse_stat module</a></li>
-<li><a class="reference internal" href="#utils-plot-module">utils.plot module</a></li>
-<li><a class="reference internal" href="#utils-probability-fit-module">utils.probability_fit module</a></li>
+<li><a class="reference internal" href="#module-utils.parse_stat">utils.parse_stat module</a></li>
+<li><a class="reference internal" href="#module-utils.plot">utils.plot module</a></li>
+<li><a class="reference internal" href="#module-utils.probability_fit">utils.probability_fit module</a></li>
 <li><a class="reference internal" href="#module-utils.read_config">utils.read_config module</a></li>
 <li><a class="reference internal" href="#module-utils">Module contents</a></li>
 </ul>

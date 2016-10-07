@@ -52,8 +52,73 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="evaluation-clustering-module">
-<h1>evaluation_clustering module<a class="headerlink" href="#evaluation-clustering-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evaluation_clustering">
+<span id="evaluation-clustering-module"></span><h1>evaluation_clustering module<a class="headerlink" href="#module-evaluation_clustering" title="Permalink to this headline">¶</a></h1>
+<p><strong>evaluation_clustering.py.</strong> Main script for running and evaluating result of the clustering process.</p>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python evaluation_clustering.py [1] -i [2] -p [3] -t [4] -cfg [5] --mcl --help
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (unnormalized similarities or pre-treated MCL format). The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder, usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-i</span></code>: MCL inflation parameter. Defaults to 1.4.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-p</span></code>: MCL pre-inflation parameter. Defaults to 1.0.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-t</span></code>: number of cores to use for MCL.</li>
+<li>[5] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">-m,</span> <span class="pre">--mcl</span></code>: if present, the script expects an input matrix in MCL label format.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p>This outputs the results of the MCL clustering with the given inflation and pre-inflation parameters.</p>
+</div></blockquote>
+<dl class="function">
+<dt id="evaluation_clustering.cluster">
+<code class="descclassname">evaluation_clustering.</code><code class="descname">cluster</code><span class="sig-paren">(</span><em>co_occ</em>, <em>output_folder</em>, <em>index_to_label</em>, <em>cores</em>, <em>task_params</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#evaluation_clustering.cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the clustering obtained after applying the chosen algorithm on the co-occurence matrix.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): Co-occurence matrix.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list mapping an index to the corresponding named entity.</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code> (<em>int</em>): Number of cores to use for the clustering algorithm (if threading option available).</li>
+<li><code class="docutils literal"><span class="pre">task_params</span></code> (<em>dict</em>): additional clustering algorithms.</li>
+<li><code class="docutils literal"><span class="pre">formated</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code> the co-occurence matrix is expected to be already formatted for MCL input.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int, optional</em>): controls verbosity level.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">clustering</span></code> (<em>list</em>): Resulting clustering (as a list mapping a sample&#8217;s index to the index of its cluster).</li>
+<li><code class="docutils literal"><span class="pre">n_clusters</span></code> (<em>int</em>): number of retrieved clusters.</li>
+<li><code class="docutils literal"><span class="pre">step_id</span></code> (%str*): step identifier, optionnal, for output</li>
+<li><code class="docutils literal"><span class="pre">summary</span></code> (<em>str</em>): string representation of the execution (for displaying purpose).</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="evaluation_clustering.evaluate">
+<code class="descclassname">evaluation_clustering.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>co_occ</em>, <em>output_folder</em>, <em>temp_folder</em>, <em>ground_truth</em>, <em>index_to_label</em>, <em>cores</em>, <em>task_params</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#evaluation_clustering.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a clustering method given a similarity matrix and various clustering parameters.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): co-occurence matrix.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth</span></code> (<em>dict</em>): ground truth clustering to compare against.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): list mapping an index to the corresponding named entity. used to generate a readable clustering.</li>
+<li><code class="docutils literal"><span class="pre">cores</span></code> (<em>int</em>): number of cores to use.</li>
+<li><code class="docutils literal"><span class="pre">task_params</span></code> (<em>list</em>): additional clustering parameters.</li>
+<li><code class="docutils literal"><span class="pre">formated</span></code> (<em>bool, optional</em>): if <code class="docutils literal"><span class="pre">True</span></code> the co-occurence matrix is expected to be already formatted for MCL input.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

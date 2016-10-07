@@ -52,8 +52,53 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="main-module">
-<h1>main module<a class="headerlink" href="#main-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-main">
+<span id="main-module"></span><h1>main module<a class="headerlink" href="#module-main" title="Permalink to this headline">¶</a></h1>
+<p>Main script for running the experiments: <code class="docutils literal"><span class="pre">python</span> <span class="pre">main.py</span> <span class="pre">--help</span></code> displays tips about the command line options. Default options are found in the <code class="docutils literal"><span class="pre">configuration.ini</span></code> file.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>python main.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -p [10] -cs [11] -cc [12] -o [13] -te [14] -in [15] -g [16] -cfg [17] -v [18] --debug --help
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where:</dt>
+<dd><ul class="first simple">
+<li>Default options are found in the <code class="docutils literal"><span class="pre">configuration.ini</span></code> file.</li>
+<li>[1] <code class="docutils literal"><span class="pre">-i,</span> <span class="pre">--iter</span></code>: number of classification iterations.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-t,</span> <span class="pre">--threads</span></code>: number of cores to use.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--dataset</span></code>: dataset to use.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-c,</span> <span class="pre">--classifier</span></code>: classifier to use.</li>
+<li>[5] <code class="docutils literal"><span class="pre">-ts,</span> <span class="pre">--trainsize</span></code>: proportion of dataset to use for training.</li>
+<li>[6] <code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--sim</span></code>: similarity type to use.</li>
+<li>[7] <code class="docutils literal"><span class="pre">-nmin</span></code>: minimum number of synthetic labels.</li>
+<li>[8] <code class="docutils literal"><span class="pre">-nmax</span></code>: maximum number of synthetic labels.</li>
+<li>[9] <code class="docutils literal"><span class="pre">-di,</span> <span class="pre">--distrib</span></code>: synthetic annotation mode (RND, UNI, OVA).</li>
+<li>[10] <code class="docutils literal"><span class="pre">-p,</span> <span class="pre">--post</span></code>: post-processing task/algorithm.</li>
+<li>[11] <code class="docutils literal"><span class="pre">-cs,</span> <span class="pre">--cvg_step</span></code>: check convergence criterion every <code class="docutils literal"><span class="pre">cs</span></code> step.</li>
+<li>[12] <code class="docutils literal"><span class="pre">-cc,</span> <span class="pre">--cvg_criterion</span></code>: convergence criterion threshold.</li>
+<li>[13] <code class="docutils literal"><span class="pre">-o,</span> <span class="pre">--output</span></code>: output folder.</li>
+<li>[14] <code class="docutils literal"><span class="pre">-te,</span> <span class="pre">--temp</span></code>: temporary folder.</li>
+<li>[15] <code class="docutils literal"><span class="pre">-in</span></code>: input data file.</li>
+<li>[16] <code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--ground</span></code>: ground-truth file.</li>
+<li>[17] <code class="docutils literal"><span class="pre">-cfg,</span> <span class="pre">--config_file</span></code>: provide a custom configuration file.</li>
+<li>[18] <code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code>: controls verbosity level (0 to 4).</li>
+<li><code class="docutils literal"><span class="pre">-db,</span> <span class="pre">--debug</span></code>: debug mode (save temporary files).</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p><strong>Main outputs:</strong></p>
+<ul class="simple">
+<li><em>output.log</em>: log file</li>
+<li><em>sim_matrix_final.npy</em>: similarity matrix.</li>
+</ul>
+<p><strong>Verbosity levels:</strong></p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">0</span></code>: minimal verbose level; almost no printed trace.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">1</span></code>: Default.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">2</span></code>: Additional print trace.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">3</span></code>: Prints out the classifier&#8217;s traces.</li>
+<li><code class="docutils literal"><span class="pre">-v</span> <span class="pre">4</span></code>: Outputs additional result (distributions plots, number of occurences in test for each entity ...) + save similarity matrix regularly.</li>
+</ul>
+</dd>
+</dl>
 </div>
 
 

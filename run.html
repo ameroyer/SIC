@@ -54,14 +54,144 @@
             
   <div class="section" id="sic-variants">
 <h1>SIC variants<a class="headerlink" href="#sic-variants" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="run-basic-module">
-<h2><code class="xref py py-mod docutils literal"><span class="pre">run_basic</span></code> Module<a class="headerlink" href="#run-basic-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-run_basic">
+<span id="run-basic-module"></span><h2><a class="reference internal" href="#module-run_basic" title="run_basic"><code class="xref py py-mod docutils literal"><span class="pre">run_basic</span></code></a> Module<a class="headerlink" href="#module-run_basic" title="Permalink to this headline">¶</a></h2>
+<p><strong>run_basic.</strong> Computing the similarity matrix in the basic setting (BIN, WBIN, WUBIN).</p>
+<dl class="function">
+<dt id="run_basic.compute_similarity_basic">
+<code class="descclassname">run_basic.</code><code class="descname">compute_similarity_basic</code><span class="sig-paren">(</span><em>n_iter</em>, <em>n_cores</em>, <em>n_locks</em>, <em>data_type</em>, <em>n_samples</em>, <em>data</em>, <em>data_occurrences</em>, <em>temp_folder</em>, <em>output_folder</em>, <em>annotation_params</em>, <em>classification_params</em>, <em>verbose</em>, <em>debug</em>, <em>with_unique_occurrences</em>, <em>preclustering</em>, <em>writing_steps</em>, <em>convergence_step</em>, <em>convergence_criterion</em><span class="sig-paren">)</span><a class="headerlink" href="#run_basic.compute_similarity_basic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the simlarity matrix in the basic setting.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_iter</span></code> (<em>int</em>): number of iterations.</li>
+<li><code class="docutils literal"><span class="pre">n_cores</span></code> (<em>int</em>): number of cores to use.</li>
+<li><code class="docutils literal"><span class="pre">n_locks</span></code> (<em>int</em>): number of locks to use on the full shared matrix.</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): data set to use.</li>
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>struct</em>): initial data.</li>
+<li><code class="docutils literal"><span class="pre">data_occurrences</span></code> (<em>struct</em>): indicates where each of the samples occurs in the data base.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>list</em>): parameters for synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>list</em>): parameters for classification.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int</em>): sets the verbosity level.</li>
+<li><code class="docutils literal"><span class="pre">with_unique_occurrences</span></code> (<em>bool</em>): indicates wether samples occur only once in the data set or not.</li>
+<li><code class="docutils literal"><span class="pre">with_common_label_wordform</span></code> (<em>bool</em>): indicates wether to give the same label to samples with identical wordform or not.</li>
+<li><code class="docutils literal"><span class="pre">writing_steps</span></code> (<em>list</em>): steps at which to save the partial matrix.</li>
+<li><code class="docutils literal"><span class="pre">convergence_step</span></code> (<em>int</em>): every &#8216;convergence_step&#8217;, the script checks if convergence is reached.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_samples_occurrences</span></code> (<em>list</em>): number of occurrences of each sample in a test set over all iterations.</li>
+<li><code class="docutils literal"><span class="pre">synthetic_labels</span></code> (<em>list</em>): synthetic labels repartition for each iteration.</li>
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): full similarity matrix.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="run-wem-module">
-<h2><code class="xref py py-mod docutils literal"><span class="pre">run_wem</span></code> Module<a class="headerlink" href="#run-wem-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-run_wem">
+<span id="run-wem-module"></span><h2><a class="reference internal" href="#module-run_wem" title="run_wem"><code class="xref py py-mod docutils literal"><span class="pre">run_wem</span></code></a> Module<a class="headerlink" href="#module-run_wem" title="Permalink to this headline">¶</a></h2>
+<p><strong>run_wem.</strong> Computing the similarity matrix in the WEM setting.</p>
+<dl class="function">
+<dt id="run_wem.compute_similarity_wem">
+<code class="descclassname">run_wem.</code><code class="descname">compute_similarity_wem</code><span class="sig-paren">(</span><em>n_iter</em>, <em>n_cores</em>, <em>n_locks</em>, <em>data_type</em>, <em>n_samples</em>, <em>data</em>, <em>ground_truth_file</em>, <em>temp_folder</em>, <em>output_folder</em>, <em>annotation_params</em>, <em>classification_params</em>, <em>verbose</em>, <em>debug</em>, <em>with_unique_occurrences</em>, <em>preclustering</em><span class="sig-paren">)</span><a class="headerlink" href="#run_wem.compute_similarity_wem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the simlarity matrix in the basic setting.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_iter</span></code> (<em>int</em>): number of iterations.</li>
+<li><code class="docutils literal"><span class="pre">n_cores</span></code> (<em>int</em>): number of cores to use.</li>
+<li><code class="docutils literal"><span class="pre">n_locks</span></code> (<em>int</em>): number of locks to use on the full shared matrix.</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): data set to use.</li>
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>struct</em>): initial data.</li>
+<li><code class="docutils literal"><span class="pre">ground_truth_file</span></code> (<em>str</em>): path to ground-truth.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>list</em>): parameters for synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>list</em>): parameters for classification.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int</em>): sets the verbosity level.</li>
+<li><code class="docutils literal"><span class="pre">with_unique_occurrences</span></code> (<em>bool</em>): indicates wether samples occur only once in the data set or not.</li>
+<li><code class="docutils literal"><span class="pre">with_common_label_wordform</span></code> (<em>bool</em>): indicates wether to give the same label to samples with identical wordform or not.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_samples_occurrences</span></code> (<em>list</em>): number of occurrences of each sample in a test set over all iterations.</li>
+<li><code class="docutils literal"><span class="pre">synthetic_labels</span></code> (<em>list</em>): synthetic labels repartition for each iteration.</li>
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): full similarity matrix.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="run-ova-module">
-<h2><code class="xref py py-mod docutils literal"><span class="pre">run_ova</span></code> Module<a class="headerlink" href="#run-ova-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-run_ova">
+<span id="run-ova-module"></span><h2><a class="reference internal" href="#module-run_ova" title="run_ova"><code class="xref py py-mod docutils literal"><span class="pre">run_ova</span></code></a> Module<a class="headerlink" href="#module-run_ova" title="Permalink to this headline">¶</a></h2>
+<p><strong>run_ova.</strong> Computing the similarity matrix in the basic setting (BIN, WBIN, WUBIN).</p>
+<dl class="function">
+<dt id="run_ova.compute_similarity_ova">
+<code class="descclassname">run_ova.</code><code class="descname">compute_similarity_ova</code><span class="sig-paren">(</span><em>n_iter</em>, <em>n_cores</em>, <em>n_locks</em>, <em>input_file</em>, <em>ground_truth_file</em>, <em>data_type</em>, <em>n_samples</em>, <em>data</em>, <em>data_occurrences</em>, <em>index_to_label</em>, <em>label_to_index</em>, <em>temp_folder</em>, <em>output_folder</em>, <em>annotation_params</em>, <em>classification_params</em>, <em>verbose</em>, <em>debug</em>, <em>with_unique_occurrences</em>, <em>preclustering</em>, <em>gtonly=True</em><span class="sig-paren">)</span><a class="headerlink" href="#run_ova.compute_similarity_ova" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the simlarity matrix in the basic setting.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_iter</span></code> (<em>int</em>): number of iterations.</li>
+<li><code class="docutils literal"><span class="pre">n_cores</span></code> (<em>int</em>): number of cores to use.</li>
+<li><code class="docutils literal"><span class="pre">n_locks</span></code> (<em>int</em>): number of locks to use on the full shared matrix.</li>
+<li><code class="docutils literal"><span class="pre">data_type</span></code> (<em>str</em>): data set to use.</li>
+<li><code class="docutils literal"><span class="pre">n_samples</span></code> (<em>int</em>): number of samples.</li>
+<li><code class="docutils literal"><span class="pre">data</span></code> (<em>struct</em>): initial data.</li>
+<li><code class="docutils literal"><span class="pre">data_occurrences</span></code> (<em>struct</em>): indicates where each of the samples occurs in the data base.</li>
+<li><code class="docutils literal"><span class="pre">index_to_label</span></code> (<em>list</em>): maps a sample&#8217;s index to a string representation.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>dict</em>): reverse index_to_label mapping.</li>
+<li><code class="docutils literal"><span class="pre">temp_folder</span></code> (<em>str</em>): path to the temporary folder.</li>
+<li><code class="docutils literal"><span class="pre">output_folder</span></code> (<em>str</em>): path to the output folder.</li>
+<li><code class="docutils literal"><span class="pre">annotation_params</span></code> (<em>list</em>): parameters for synthetic annotation.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>list</em>): parameters for classification.</li>
+<li><code class="docutils literal"><span class="pre">verbose</span></code> (<em>int</em>): sets the verbosity level.</li>
+<li><code class="docutils literal"><span class="pre">with_unique_occurrences</span></code> (<em>bool</em>): indicates wether samples occur only once in the data set or not.</li>
+<li><code class="docutils literal"><span class="pre">with_common_label_wordform</span></code> (<em>bool</em>): indicates wether to give the ame label to samples with identical wordform or not.</li>
+<li><code class="docutils literal"><span class="pre">writing_steps</span></code> (<em>list</em>): steps at which to save the partial matrix.</li>
+<li><code class="docutils literal"><span class="pre">gt_only</span></code> (<em>boolean, optional</em>): if True, experiments will only be conducted from query samples from the ground-truth. Defqults to True.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">n_samples_occurrences</span></code> (<em>list</em>): number of occurrences of each sample in a test set over all iterations.</li>
+<li><code class="docutils literal"><span class="pre">synthetic_labels</span></code> (<em>list</em>): synthetic labels repartition for each iteration.</li>
+<li><code class="docutils literal"><span class="pre">co_occ</span></code> (<em>ndarray</em>): full similarity matrix.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="run_ova.load_file">
+<code class="descclassname">run_ova.</code><code class="descname">load_file</code><span class="sig-paren">(</span><em>file</em>, <em>input_file</em>, <em>train_docs</em>, <em>label_to_index</em>, <em>classification_params</em><span class="sig-paren">)</span><a class="headerlink" href="#run_ova.load_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse an Aquaint file to retrieve all occurrences of a single words. Used for a threaded execution in a Pool.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">file</span></code> (<em>str</em>): name the file to parse.</li>
+<li><code class="docutils literal"><span class="pre">input_file</span></code> (<em>str</em>): directory of <code class="docutils literal"><span class="pre">file</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">train_docs</span></code> (<em>dict</em>): dict mapping a file to the documents containing the considered word.</li>
+<li><code class="docutils literal"><span class="pre">label_to_index</span></code> (<em>dict</em>): maps a label to the corresponding entity index.</li>
+<li><code class="docutils literal"><span class="pre">classification_params</span></code> (<em>dict</em>): classification parameters.</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">samples</span></code> (<em>list</em>): list of tagged sentences containing the considered word in the file.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
@@ -74,9 +204,9 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">SIC variants</a><ul>
-<li><a class="reference internal" href="#run-basic-module"><code class="docutils literal"><span class="pre">run_basic</span></code> Module</a></li>
-<li><a class="reference internal" href="#run-wem-module"><code class="docutils literal"><span class="pre">run_wem</span></code> Module</a></li>
-<li><a class="reference internal" href="#run-ova-module"><code class="docutils literal"><span class="pre">run_ova</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-run_basic"><code class="docutils literal"><span class="pre">run_basic</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-run_wem"><code class="docutils literal"><span class="pre">run_wem</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-run_ova"><code class="docutils literal"><span class="pre">run_ova</span></code> Module</a></li>
 </ul>
 </li>
 </ul>

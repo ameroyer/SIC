@@ -52,8 +52,41 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="convergence-analysis-module">
-<h1>convergence_analysis module<a class="headerlink" href="#convergence-analysis-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-convergence_analysis">
+<span id="convergence-analysis-module"></span><h1>convergence_analysis module<a class="headerlink" href="#module-convergence_analysis" title="Permalink to this headline">¶</a></h1>
+<p><strong>convergence_analysis.py.</strong> Study of the convergence through the evolution of the Spearman and Pearson correlation + measure of the mAP value every 5 iteration.</p>
+<div class="section" id="convergence-analysis">
+<h2>Convergence analysis<a class="headerlink" href="#convergence-analysis" title="Permalink to this headline">¶</a></h2>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>python convergence_analysis.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -o [10] -te [11] -in [12] -g [13] -cfg [14] -v [15] --debug --help
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where:</dt>
+<dd><ul class="first last simple">
+<li>Default options are found in the <code class="docutils literal"><span class="pre">configuration.ini</span></code> file.</li>
+<li>[1] <code class="docutils literal"><span class="pre">-i,</span> <span class="pre">--iter</span></code>: number of classification iterations.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-t,</span> <span class="pre">--threads</span></code>: number of cores to use.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--dataset</span></code>: dataset to use.</li>
+<li>[4] <code class="docutils literal"><span class="pre">-c,</span> <span class="pre">--classifier</span></code>: classifier to use.</li>
+<li>[5] <code class="docutils literal"><span class="pre">-ts,</span> <span class="pre">--trainsize</span></code>: proportion of dataset to use for training.</li>
+<li>[6] <code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--sim</span></code>: similarity type to use (EM not supported).</li>
+<li>[7] <code class="docutils literal"><span class="pre">-nmin</span></code>: minimum number of synthetic labels.</li>
+<li>[8] <code class="docutils literal"><span class="pre">-nmax</span></code>: maximum number of synthetic labels.</li>
+<li>[9] <code class="docutils literal"><span class="pre">-di,</span> <span class="pre">--distrib</span></code>: synthetic annotation mode (RND, UNI, OVA).</li>
+<li>[10] <code class="docutils literal"><span class="pre">-o,</span> <span class="pre">--output</span></code>: output folder.</li>
+<li>[11] <code class="docutils literal"><span class="pre">-te,</span> <span class="pre">--temp</span></code>: temporary folder.</li>
+<li>[12] <code class="docutils literal"><span class="pre">-in</span></code>: input data file.</li>
+<li>[13] <code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--ground</span></code>: ground-truth file.</li>
+<li>[14] <code class="docutils literal"><span class="pre">-cfg,</span> <span class="pre">--config_file</span></code>: provide a custom configuration file.</li>
+<li>[15] <code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code>: controls verbosity level (0 to 4).</li>
+<li><code class="docutils literal"><span class="pre">-db,</span> <span class="pre">--debug</span></code>: debug mode (save temporary files).</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+</dd>
+</dl>
+<p>Computes <code class="docutils literal"><span class="pre">N</span></code> iterations of SIC and compares the final similarity matrix to partial matrices in past iterations (see <code class="docutils literal"><span class="pre">steps</span></code> in <code class="docutils literal"><span class="pre">convergence_analysis.py</span></code>).</p>
+</div>
 </div>
 
 
@@ -62,6 +95,14 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">convergence_analysis module</a><ul>
+<li><a class="reference internal" href="#convergence-analysis">Convergence analysis</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="similarity_analysis.html"
                         title="previous chapter">similarity_analysis module</a></p>

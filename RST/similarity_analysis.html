@@ -52,8 +52,25 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="similarity-analysis-module">
-<h1>similarity_analysis module<a class="headerlink" href="#similarity-analysis-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-similarity_analysis">
+<span id="similarity-analysis-module"></span><h1>similarity_analysis module<a class="headerlink" href="#module-similarity_analysis" title="Permalink to this headline">¶</a></h1>
+<p><strong>similarity_analysis.py.</strong> Main script for running experiments on the distribution of the similarities and the prunning processes.</p>
+<blockquote>
+<div><p><strong>Usage</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>python similarity_analysis.py [1] -n [2] -cfg [3] --mean --theo --help
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li>[1] : input similarity matrix (unnormalized). The script expects a &#8216;exp_configuration.ini&#8217; file in the same folder, usually generated when using <code class="docutils literal"><span class="pre">main.py</span></code>.</li>
+<li>[2] <code class="docutils literal"><span class="pre">-n</span></code>: number of samples to plot for each class. Defaults to 5.</li>
+<li>[3] <code class="docutils literal"><span class="pre">-cfg</span></code>: provide a custom configuration file to replace &#8216;exp_configuration.ini&#8217;.</li>
+<li><code class="docutils literal"><span class="pre">--mean</span></code>: if given, plot an average ROC curve for each ground-truth class.</li>
+<li><code class="docutils literal"><span class="pre">--theo</span></code>: if given, plot the comparison of the distribution against the theoretical model of the corresponding SIC variant.</li>
+<li><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></li>
+</ul>
+<p>This outputs pdf histograms of the distribution of similarities for several samples across the matrix and for several normalization parameters.</p>
+</div></blockquote>
 </div>
 
 

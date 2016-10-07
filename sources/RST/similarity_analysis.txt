@@ -1,7 +1,0 @@
-similarity_analysis module
-==========================
-
-.. automodule:: similarity_analysis
-    :members:
-    :undoc-members:
-    :show-inheritance:
