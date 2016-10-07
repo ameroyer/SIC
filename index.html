@@ -98,45 +98,35 @@
 <h1>README - SIC: Similarity by Iterative Classifications<a class="headerlink" href="#readme-sic-similarity-by-iterative-classifications" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#documentation" id="id1">Documentation</a></li>
-<li><a class="reference internal" href="#main-script" id="id2">Main script</a></li>
-<li><a class="reference internal" href="#running-on-the-cluster" id="id3">Running on the cluster</a></li>
-<li><a class="reference internal" href="#general-structure-of-the-sic-implementation" id="id4">General structure of the SIC implementation</a></li>
-<li><a class="reference internal" href="#options-and-configuration-files" id="id5">Options and Configuration files</a><ul>
-<li><a class="reference internal" href="#general-options" id="id6">General options</a></li>
-<li><a class="reference internal" href="#classifier-options-crf-htk-dt" id="id7">Classifier options (CRF, HTK, DT)</a></li>
-<li><a class="reference internal" href="#evaluation-options" id="id8">Evaluation options</a></li>
-<li><a class="reference internal" href="#dataset-options" id="id9">Dataset options</a></li>
+<li><a class="reference internal" href="#main-script" id="id1">Main script</a></li>
+<li><a class="reference internal" href="#running-on-the-cluster" id="id2">Running on the cluster</a></li>
+<li><a class="reference internal" href="#general-structure-of-the-sic-implementation" id="id3">General structure of the SIC implementation</a></li>
+<li><a class="reference internal" href="#options-and-configuration-files" id="id4">Options and Configuration files</a><ul>
+<li><a class="reference internal" href="#general-options" id="id5">General options</a></li>
+<li><a class="reference internal" href="#classifier-options-crf-htk-dt" id="id6">Classifier options (CRF, HTK, DT)</a></li>
+<li><a class="reference internal" href="#evaluation-options" id="id7">Evaluation options</a></li>
+<li><a class="reference internal" href="#dataset-options" id="id8">Dataset options</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#additional-scripts" id="id10">Additional scripts</a><ul>
-<li><a class="reference internal" href="#plotting-similarity-distribution" id="id11">Plotting similarity distribution</a></li>
-<li><a class="reference internal" href="#convergence-analysis" id="id12">Convergence analysis</a></li>
-<li><a class="reference internal" href="#confidence-analysis" id="id13">Confidence analysis</a></li>
-<li><a class="reference internal" href="#clustering-evaluation" id="id14">Clustering evaluation</a></li>
-<li><a class="reference internal" href="#map-evaluation" id="id15">mAP evaluation</a></li>
-<li><a class="reference internal" href="#visualization" id="id16">Visualization</a></li>
-<li><a class="reference internal" href="#the-parse-py-script" id="id17">The parse.py script</a></li>
+<li><a class="reference internal" href="#additional-scripts" id="id9">Additional scripts</a><ul>
+<li><a class="reference internal" href="#plotting-similarity-distribution" id="id10">Plotting similarity distribution</a></li>
+<li><a class="reference internal" href="#convergence-analysis" id="id11">Convergence analysis</a></li>
+<li><a class="reference internal" href="#confidence-analysis" id="id12">Confidence analysis</a></li>
+<li><a class="reference internal" href="#clustering-evaluation" id="id13">Clustering evaluation</a></li>
+<li><a class="reference internal" href="#map-evaluation" id="id14">mAP evaluation</a></li>
+<li><a class="reference internal" href="#visualization" id="id15">Visualization</a></li>
+<li><a class="reference internal" href="#the-parse-py-script" id="id16">The parse.py script</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#requirements" id="id18">Requirements</a><ul>
-<li><a class="reference internal" href="#main-python-dependencies" id="id19">Main Python dependencies</a></li>
-<li><a class="reference internal" href="#external-libraries" id="id20">External libraries</a></li>
+<li><a class="reference internal" href="#requirements" id="id17">Requirements</a><ul>
+<li><a class="reference internal" href="#main-python-dependencies" id="id18">Main Python dependencies</a></li>
+<li><a class="reference internal" href="#external-libraries" id="id19">External libraries</a></li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="documentation">
-<h2><a class="toc-backref" href="#id1">Documentation</a><a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p><strong>Generation</strong> (Using Sphinx)</p>
-<div class="highlight-python"><div class="highlight"><pre>cd Doc/
-make html
-</pre></div>
-</div>
-<p>The documentation can then be found in <code class="docutils literal"><span class="pre">Doc/_build/html/index.html</span></code></p>
 </div>
 <div class="section" id="main-script">
-<h2><a class="toc-backref" href="#id2">Main script</a><a class="headerlink" href="#main-script" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Main script</a><a class="headerlink" href="#main-script" title="Permalink to this headline">¶</a></h2>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre>python main.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -p [10] -cs [11] -cc [12] -o [13] -te [14] -in [15] -g [16] -cfg [17] -v [18] --debug --oar --help
 </pre></div>
@@ -189,7 +179,7 @@ make html
 </dl>
 </div>
 <div class="section" id="running-on-the-cluster">
-<h2><a class="toc-backref" href="#id3">Running on the cluster</a><a class="headerlink" href="#running-on-the-cluster" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Running on the cluster</a><a class="headerlink" href="#running-on-the-cluster" title="Permalink to this headline">¶</a></h2>
 <p>To run the experiments on a cluster (OAR scheduler), use the scripts located in the OAR folder. Each script simply sets up the options for the cluster and then call the <code class="docutils literal"><span class="pre">main.py</span></code> script on one full node. Once the computation is done, the corresponding similarity matrix is output in the configured folder. To combine those matrices, the user can then do a weighted average depending on the number of iterations for instance.</p>
 <p><strong>Usage on the cluster frontend (batch mode):</strong></p>
 <div class="highlight-python"><div class="highlight"><pre>oarsub -S ./oar_aqua.sh
@@ -217,7 +207,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="general-structure-of-the-sic-implementation">
-<h2><a class="toc-backref" href="#id4">General structure of the SIC implementation</a><a class="headerlink" href="#general-structure-of-the-sic-implementation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">General structure of the SIC implementation</a><a class="headerlink" href="#general-structure-of-the-sic-implementation" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><code class="docutils literal"><span class="pre">main.py</span></code> is a wrapper for the <code class="docutils literal"><span class="pre">run_*</span></code> functions. It sets up the correct parameters for the run, apply SIC and then stores and evaluates the matrix.</li>
@@ -231,10 +221,10 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="options-and-configuration-files">
-<h2><a class="toc-backref" href="#id5">Options and Configuration files</a><a class="headerlink" href="#options-and-configuration-files" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Options and Configuration files</a><a class="headerlink" href="#options-and-configuration-files" title="Permalink to this headline">¶</a></h2>
 <p>The following is the list of the customizable options found in the configuration file and their roles:</p>
 <div class="section" id="general-options">
-<h3><a class="toc-backref" href="#id6">General options</a><a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">General options</a><a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
 <p>The options are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -259,7 +249,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="classifier-options-crf-htk-dt">
-<h3><a class="toc-backref" href="#id7">Classifier options (CRF, HTK, DT)</a><a class="headerlink" href="#classifier-options-crf-htk-dt" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Classifier options (CRF, HTK, DT)</a><a class="headerlink" href="#classifier-options-crf-htk-dt" title="Permalink to this headline">¶</a></h3>
 <p>The common options are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -277,7 +267,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="evaluation-options">
-<h3><a class="toc-backref" href="#id8">Evaluation options</a><a class="headerlink" href="#evaluation-options" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Evaluation options</a><a class="headerlink" href="#evaluation-options" title="Permalink to this headline">¶</a></h3>
 <p>The common options are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -294,7 +284,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="dataset-options">
-<h3><a class="toc-backref" href="#id9">Dataset options</a><a class="headerlink" href="#dataset-options" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">Dataset options</a><a class="headerlink" href="#dataset-options" title="Permalink to this headline">¶</a></h3>
 <p>The common options are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -314,9 +304,9 @@ make html
 </div>
 </div>
 <div class="section" id="additional-scripts">
-<h2><a class="toc-backref" href="#id10">Additional scripts</a><a class="headerlink" href="#additional-scripts" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">Additional scripts</a><a class="headerlink" href="#additional-scripts" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="plotting-similarity-distribution">
-<h3><a class="toc-backref" href="#id11">Plotting similarity distribution</a><a class="headerlink" href="#plotting-similarity-distribution" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id10">Plotting similarity distribution</a><a class="headerlink" href="#plotting-similarity-distribution" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p><strong>Usage</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre>python similarity_analysis.py [1] -n [2] -cfg [3] --mean --theo --help
@@ -335,7 +325,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="convergence-analysis">
-<h3><a class="toc-backref" href="#id12">Convergence analysis</a><a class="headerlink" href="#convergence-analysis" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id11">Convergence analysis</a><a class="headerlink" href="#convergence-analysis" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre>python convergence_analysis.py -N [1] -t [2] -d [3] -c [4] -ts [5] -s [6] -nmin [7] -nmax [8] -di [9] -o [10] -te [11] -in [12] -g [13] -cfg [14] -v [15] --debug --help
 </pre></div>
@@ -366,7 +356,7 @@ make html
 <p>Computes <code class="docutils literal"><span class="pre">N</span></code> iterations of SIC and compares the final similarity matrix to partial matrices in past iterations (see <code class="docutils literal"><span class="pre">steps</span></code> in <code class="docutils literal"><span class="pre">convergence_analysis.py</span></code>).</p>
 </div>
 <div class="section" id="confidence-analysis">
-<h3><a class="toc-backref" href="#id13">Confidence analysis</a><a class="headerlink" href="#confidence-analysis" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id12">Confidence analysis</a><a class="headerlink" href="#confidence-analysis" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre>python confidence_analysis.py  [1] -cfg [2] --mean --theo --help
 </pre></div>
@@ -382,7 +372,7 @@ make html
 <p>Computes confidence scores for the input matrix and compares them to the corresponding mAP results.</p>
 </div>
 <div class="section" id="clustering-evaluation">
-<h3><a class="toc-backref" href="#id14">Clustering evaluation</a><a class="headerlink" href="#clustering-evaluation" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id13">Clustering evaluation</a><a class="headerlink" href="#clustering-evaluation" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p><strong>Usage</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre>python evaluation_clustering.py [1] -i [2] -p [3] -t [4] -cfg [5] --mcl --help
@@ -402,7 +392,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="map-evaluation">
-<h3><a class="toc-backref" href="#id15">mAP evaluation</a><a class="headerlink" href="#map-evaluation" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id14">mAP evaluation</a><a class="headerlink" href="#map-evaluation" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p><strong>Usage</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre>python evaluation_retrieval.py [1] -s [2] -ov [3] -cfg [4] --help
@@ -420,7 +410,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="visualization">
-<h3><a class="toc-backref" href="#id16">Visualization</a><a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id15">Visualization</a><a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p><strong>Usage</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre>python utils/plot.py [1] -cfg [2]
@@ -435,7 +425,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="the-parse-py-script">
-<h3><a class="toc-backref" href="#id17">The parse.py script</a><a class="headerlink" href="#the-parse-py-script" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id16">The parse.py script</a><a class="headerlink" href="#the-parse-py-script" title="Permalink to this headline">¶</a></h3>
 <p>The parse.py and parse_stat.py script can be used to generate some information on the input data that may be required for some experiments.</p>
 <blockquote>
 <div><ul class="simple">
@@ -456,9 +446,9 @@ make html
 </div>
 </div>
 <div class="section" id="requirements">
-<h2><a class="toc-backref" href="#id18">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="main-python-dependencies">
-<h3><a class="toc-backref" href="#id19">Main Python dependencies</a><a class="headerlink" href="#main-python-dependencies" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id18">Main Python dependencies</a><a class="headerlink" href="#main-python-dependencies" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li>Tested with Python 2.7</li>
@@ -469,7 +459,7 @@ make html
 </div></blockquote>
 </div>
 <div class="section" id="external-libraries">
-<h3><a class="toc-backref" href="#id20">External libraries</a><a class="headerlink" href="#external-libraries" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id19">External libraries</a><a class="headerlink" href="#external-libraries" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li>[MCL](<a class="reference external" href="http://micans.org/mcl/">http://micans.org/mcl/</a>), Markov clustering algorithm</li>
@@ -499,7 +489,6 @@ make html
   <ul>
 <li><a class="reference internal" href="#">Source code Documentation</a></li>
 <li><a class="reference internal" href="#readme-sic-similarity-by-iterative-classifications">README - SIC: Similarity by Iterative Classifications</a><ul>
-<li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#main-script">Main script</a></li>
 <li><a class="reference internal" href="#running-on-the-cluster">Running on the cluster</a></li>
 <li><a class="reference internal" href="#general-structure-of-the-sic-implementation">General structure of the SIC implementation</a></li>
