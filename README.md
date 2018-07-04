@@ -1,11 +1,8 @@
-# [ S I C ]  r e a d   m e
-
 ![license](https://img.shields.io/github/license/ameroyer/SIC.svg)
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/ameroyer/SIC.svg)
 ![GitHub top language](https://img.shields.io/github/languages/top/ameroyer/SIC.svg)
 
-
-
+# [ S I C ]  r e a d   m e
 
 Implementation of **SIC** (Similarity by Iterative Classification), an unsupervised machine learning technique to estimate a similarity measures from repeated classification iterations on the data. See the following technical report for more details about the method, implementation and datasets used:
 
