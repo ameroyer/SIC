@@ -1,6 +1,7 @@
 ![license](https://img.shields.io/github/license/ameroyer/SIC.svg)
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/ameroyer/SIC.svg)
 ![GitHub top language](https://img.shields.io/github/languages/top/ameroyer/SIC.svg)
+![Maintenance](https://img.shields.io/maintenance/no/2017.svg)
 
 # [ S I C ]  r e a d   m e
 
